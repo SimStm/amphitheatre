@@ -44,7 +44,7 @@ export function MemberList({
   }
 
   return (
-    <ul className="space-y-3 overflow-y-auto p-4" aria-label={t("a11y.membersRegion")}>
+    <ul className="space-y-3 h-full overflow-y-auto p-4" aria-label={t("a11y.membersRegion")}>
       {sorted.map((member) => (
         <MemberRow
           key={member.userId}
