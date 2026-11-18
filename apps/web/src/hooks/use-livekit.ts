@@ -33,8 +33,10 @@ import {
   screenPublishOptions,
   voicePublishOptions,
   type MediaQualityKey,
+  type MediaQualityPrefs,
 } from "../lib/media-quality.ts";
 import type { ParticipantMedia } from "../shared-types.ts";
+import { startAutoScreenQuality } from "../lib/screen-auto.ts";
 import { useRoomStore } from "../stores/room-store.ts";
 
 const AUDIO_BLOCKED_TOAST = "livekit-audio-blocked";
@@ -177,6 +179,7 @@ function isActiveVideoPublication(
 export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
   const roomRef = useRef<Room | null>(null);
   const stageIdsRef = useRef<ReadonlySet<string> | null>(null);
+  const stopAutoScreenRef = useRef<(() => void) | null>(null);
   const [tiles, setTiles] = useState<StageTile[]>([]);
   const localMutedUserIds = useRoomStore((s) => s.localMutedUserIds);
   const voiceLeft = useRoomStore((s) => s.voiceLeft);
@@ -202,6 +205,12 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     collect(room.localParticipant, true);
     room.remoteParticipants.forEach((participant) => collect(participant, false));
     setTiles(next);
+  }, []);
+
+  const stopAutoScreen = useCallback(() => {
+    stopAutoScreenRef.current?.();
+    stopAutoScreenRef.current = null;
+    useRoomStore.getState().setScreenAutoTier(null);
   }, []);
 
   const syncParticipant = useCallback((participant: Participant) => {
@@ -286,7 +295,8 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
       _pub.track?.mediaStreamTrack?.addEventListener("ended", () => refreshTiles(room), { once: true });
       refreshTiles(room);
     });
-    room.on(RoomEvent.LocalTrackUnpublished, () => {
+    room.on(RoomEvent.LocalTrackUnpublished, (publication) => {
+      if (publication.source === Track.Source.ScreenShare) stopAutoScreen();
       syncParticipant(room.localParticipant);
       refreshTiles(room);
     });
@@ -382,6 +392,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
 
     return () => {
       stopped = true;
+      stopAutoScreen();
       window.removeEventListener("pointerdown", unlockOnGesture);
       toast.dismiss(AUDIO_BLOCKED_TOAST);
       store.setLivekitStatus("idle");
@@ -394,7 +405,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
       roomRef.current = null;
       setTiles([]);
     };
-  }, [roomId, enabled, refreshTiles, syncParticipant]);
+  }, [roomId, enabled, refreshTiles, stopAutoScreen, syncParticipant]);
 
   useEffect(() => {
     const room = roomRef.current;
@@ -450,6 +461,15 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     }
   };
 
+  const startAutoScreen = (room: Room, quality: MediaQualityPrefs) => {
+    stopAutoScreen();
+    const track = room.localParticipant.getTrackPublication(Track.Source.ScreenShare)?.videoTrack;
+    if (quality.screen !== "auto" || !track) return;
+    stopAutoScreenRef.current = startAutoScreenQuality(track, quality.screenContent, (tier) =>
+      useRoomStore.getState().setScreenAutoTier(tier),
+    );
+  };
+
   const setScreen = async (enabledShare: boolean) => {
     const room = roomRef.current;
     if (!room) return;
@@ -470,6 +490,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
           if (isDisplayMediaCancelled(err)) throw err;
           await room.localParticipant.setScreenShareEnabled(true, capture, publish);
         }
+        startAutoScreen(room, quality);
       }
     } catch (err) {
       if (!isDisplayMediaCancelled(err)) {

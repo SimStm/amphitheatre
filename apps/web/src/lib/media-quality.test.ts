@@ -7,7 +7,9 @@ import {
   parseMediaQuality,
   requestedVideoQuality,
   screenCaptureOptions,
+  SCREEN_USAGE_GUIDE,
   screenPublishOptions,
+  screenUsage,
   voicePublishOptions,
 } from "./media-quality.ts";
 
@@ -24,9 +26,10 @@ describe("parseMediaQuality", () => {
 });
 
 describe("publish options", () => {
-  test("default screen share is 1080p at 30 fps with a smaller fallback layer", () => {
-    const capture = screenCaptureOptions(DEFAULT_MEDIA_QUALITY, "Chrome");
-    const publish = screenPublishOptions(DEFAULT_MEDIA_QUALITY);
+  test("high screen quality is 1080p at 30 fps with a smaller fallback layer", () => {
+    const prefs = { ...DEFAULT_MEDIA_QUALITY, screen: "high" } as const;
+    const capture = screenCaptureOptions(prefs, "Chrome");
+    const publish = screenPublishOptions(prefs);
     expect(capture.resolution).toMatchObject({ width: 1920, height: 1080, frameRate: 30 });
     expect(capture.contentHint).toBe("detail");
     expect(publish.screenShareEncoding).toMatchObject({ maxBitrate: 8_000_000, maxFramerate: 30 });
@@ -35,9 +38,39 @@ describe("publish options", () => {
   });
 
   test("video content favors smooth playback", () => {
-    const prefs = { screen: "high", screenContent: "motion" } as const;
+    const prefs = { screen: "high", screenFps: "30", screenContent: "motion" } as const;
     expect(screenCaptureOptions(prefs, "Chrome").contentHint).toBe("motion");
     expect(screenPublishOptions(prefs).degradationPreference).toBe("balanced");
+  });
+
+  test("60 fps raises the frame rate and bitrate", () => {
+    const prefs = { screen: "high", screenFps: "60", screenContent: "motion" } as const;
+    expect(screenCaptureOptions(prefs, "Chrome").resolution?.frameRate).toBe(60);
+    expect(screenPublishOptions(prefs).screenShareEncoding).toMatchObject({
+      maxBitrate: 12_000_000,
+      maxFramerate: 60,
+    });
+  });
+
+  test("automatic quality starts safely and captures what it may reach", () => {
+    const text = { screen: "auto", screenFps: "30", screenContent: "detail" } as const;
+    const video = { ...text, screenContent: "motion" } as const;
+    expect(screenPublishOptions(text).screenShareEncoding).toMatchObject({
+      maxBitrate: 5_000_000,
+      maxFramerate: 30,
+    });
+    expect(screenCaptureOptions(text, "Chrome").resolution?.frameRate).toBe(30);
+    expect(screenCaptureOptions(video, "Chrome").resolution?.frameRate).toBe(60);
+  });
+
+  test("usage warns about heavy choices", () => {
+    expect(screenUsage({ screen: "standard", screenFps: "30", screenContent: "detail" })).toEqual({
+      uploadMbps: 4,
+      recommendedMbps: 6,
+      heavy: false,
+    });
+    expect(screenUsage({ screen: "max", screenFps: "60", screenContent: "motion" }).heavy).toBe(true);
+    expect(SCREEN_USAGE_GUIDE.map((row) => row.recommendedMbps)).toEqual([6, 15, 25, 45]);
   });
 
   test("Safari 17 does not request a capture resolution", () => {

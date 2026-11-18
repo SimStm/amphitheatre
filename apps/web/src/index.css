@@ -563,6 +563,20 @@ dialog.ui-dialog::backdrop {
   transform: rotate(45deg);
 }
 
+.ui-popover[data-side="none"] .ui-popover__arrow {
+  display: none;
+}
+
+.ui-popover[data-side="left"] .ui-popover__surface {
+  transform-origin: 100% var(--popover-arrow-top, 50%);
+}
+
+.ui-popover[data-side="left"] .ui-popover__arrow {
+  right: -8px;
+  left: auto;
+  transform: rotate(225deg);
+}
+
 @media (max-width: 767px) {
   .ui-dialog__panel {
     width: calc(100% - 1rem);

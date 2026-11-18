@@ -114,7 +114,7 @@ Tabler icons only (`@tabler/icons-react`), stroke 1.75 to 1.9. No emoji in the U
 | `IconButton` | Square or round icon action with a required label and tooltip |
 | `Tooltip` | Short label on hover and focus |
 | `Dialog`, `DialogFrame` | Modal with title and footer, or a free layout |
-| `Popover` | Speech bubble beside an anchor, with an arrow, in the top layer |
+| `Popover` | Speech bubble beside an anchor, on the side with room, with an arrow, in the top layer |
 | `RoleBadge`, `RoleMark`, `RoleIcon` | Room role as a pill, an avatar mark, or an inline icon |
 | `FloatSurface` | Panel floating over the stage |
 | `Avatar`, `AvatarStack` | Person, with speaking and self states |

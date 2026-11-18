@@ -1,6 +1,7 @@
 import {
   IconAdjustments,
   IconBroadcast,
+  IconGauge,
   IconInfoCircle,
   IconPalette,
 } from "@tabler/icons-react";
@@ -14,11 +15,12 @@ import { cn } from "../../lib/cn.ts";
 import { Dialog } from "../ui/dialog.tsx";
 import { AboutPanel } from "./about-panel.tsx";
 import { BroadcastSettingsPanel } from "./broadcast-settings-panel.tsx";
+import { CallQualityPanel } from "./call-quality-panel.tsx";
 import { ChatSettingsPanel } from "./chat-settings-panel.tsx";
 import { GeneralSettingsPanel } from "./general-settings-panel.tsx";
 import { MediaSettingsPanel } from "./media-settings-panel.tsx";
 
-type Tab = "general" | "admin" | "devices" | "about";
+type Tab = "general" | "admin" | "devices" | "quality" | "about";
 
 type RoomSettingsModalProps = {
   open: boolean;
@@ -80,6 +82,7 @@ export function RoomSettingsModal({
       admin: true,
     },
     { id: "devices", label: t("settings.devicesTab"), icon: IconAdjustments },
+    { id: "quality", label: t("settings.qualityTab"), icon: IconGauge },
     { id: "about", label: t("settings.aboutTab"), icon: IconInfoCircle },
   ];
 
@@ -93,7 +96,7 @@ export function RoomSettingsModal({
     >
       <div className="flex min-h-0 flex-1 flex-col sm:flex-row">
         <div
-          className="flex shrink-0 flex-row gap-1 overflow-x-auto overflow-y-hidden border-b border-border p-2 sm:w-44 sm:flex-col sm:overflow-visible sm:border-r sm:border-b-0"
+          className="flex shrink-0 flex-row gap-1 overflow-x-auto overflow-y-hidden border-b border-border p-2 sm:w-52 sm:flex-col sm:overflow-visible sm:border-r sm:border-b-0"
           role="tablist"
           aria-label={t("settings.title")}
           aria-orientation="vertical"
@@ -135,9 +138,9 @@ export function RoomSettingsModal({
               micEnabled={micEnabled}
               micLocked={micLocked}
               setMic={setMic}
-              applyMediaQuality={applyMediaQuality}
             />
           ) : null}
+          {current === "quality" ? <CallQualityPanel applyMediaQuality={applyMediaQuality} /> : null}
           {current === "about" ? <AboutPanel /> : null}
           {current === "admin" ? (
             <div className="flex flex-col gap-8">

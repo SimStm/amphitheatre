@@ -15,7 +15,7 @@ type PopoverProps = {
   children: ReactNode;
 };
 
-/** Speech-bubble popover in the top layer, placed to the right of its anchor. */
+/** Speech-bubble popover in the top layer, placed beside its anchor. */
 export function Popover({ open, onClose, anchor, label, className, children }: PopoverProps) {
   const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
@@ -40,15 +40,17 @@ export function Popover({ open, onClose, anchor, label, className, children }: P
       const box = anchor.getBoundingClientRect();
       const place = placePopover({
         anchor: {
+          left: box.left + box.width / 2 - anchor.offsetWidth / 2,
           right: box.left + box.width / 2 + anchor.offsetWidth / 2,
           centerY: box.top + box.height / 2,
         },
         size: { width: element.offsetWidth, height: element.offsetHeight },
         viewport: { width: window.innerWidth, height: window.innerHeight },
       });
-      const next = `${place.left}|${place.top}|${place.arrowTop}`;
+      const next = `${place.left}|${place.top}|${place.arrowTop}|${place.side}`;
       if (next !== placed) {
         placed = next;
+        element.dataset.side = place.side;
         element.style.setProperty("--popover-left", `${place.left}px`);
         element.style.setProperty("--popover-top", `${place.top}px`);
         element.style.setProperty("--popover-arrow-top", `${place.arrowTop}px`);
@@ -68,13 +70,17 @@ export function Popover({ open, onClose, anchor, label, className, children }: P
       onCloseRef.current();
     };
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onCloseRef.current();
+      if (event.key !== "Escape") return;
+      // Inside a dialog, Escape closes only the popover.
+      event.preventDefault();
+      event.stopPropagation();
+      onCloseRef.current();
     };
     document.addEventListener("pointerdown", onPointerDown, true);
-    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown, true);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown, true);
-      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keydown", onKeyDown, true);
     };
   }, [open, anchor]);
 

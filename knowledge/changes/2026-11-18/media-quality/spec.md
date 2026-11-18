@@ -38,3 +38,14 @@ People send good quality by default. Viewers receive the best layer the sender p
 4. Viewing quality and voice or camera quality apply at once. Screen quality applies to the next share, and the screen says so.
 5. A stream outside the viewer's stage is requested at the lowest layer.
 6. Typecheck, API tests, web tests, lint, builds, and `docker compose config` pass.
+
+# Follow-up: 60 fps, automatic screen quality, and connection guidance
+
+The owner asked for up to 60 fps on screen sharing, a choice of frame rate, an automatic option, and clear, human estimates of what each choice uses from the person's connection, with Brazilian plan examples and details in popovers.
+
+7. A fixed screen quality can be sent at 30 or 60 fps.
+8. Automatic is the default for new choices. It starts safely, rises only while the connection and computer have room, drops when they do not, and never goes above 1080p. It uses 60 fps only for video and games.
+9. The selected screen option shows one short line with the upload it may use and the upload recommended. Heavy options show a clear warning.
+10. A popover explains upload versus download with a 600 Mega example, says the number of viewers does not change the sender's upload, and suggests a quality per upload speed.
+11. The new text exists in `en`, `pt-BR`, and `es`. Escape closes the popover without closing Settings.
+12. These choices live in their own Settings tab, separate from Devices. The tab says they apply to room conversations and do not change the live stage broadcast.

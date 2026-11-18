@@ -6,6 +6,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-11-18
+
+### Added
+
+- Screen sharing can run at 60 fps, and a new Automatic option adjusts quality to the sender's connection and computer. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/media-quality))
+- Each screen option shows how much upload it may use, with a warning for heavy choices and a short guide. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/media-quality))
+
+### Changed
+
+- Call quality choices moved from Devices to their own Settings tab, which says they apply to room conversations and not to the live stage broadcast. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/media-quality))
+
 ## [2.0.1] - 2026-11-18
 
 ### Added
@@ -144,7 +155,8 @@ Rooms, roles, moderation, and the API work as before. To update a self-hosted in
 
 - Multi-arch Docker release build: pin the JS-only `deps`/`build` stages in `Dockerfile` to `--platform=$BUILDPLATFORM` so `pnpm install`/`vite build` run natively on the runner instead of crashing under QEMU emulation ("illegal instruction") while cross-building `linux/arm64`.
 
-[Unreleased]: https://github.com/simstm/amphitheatre/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/simstm/amphitheatre/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/simstm/amphitheatre/releases/tag/v2.0.2
 [2.0.1]: https://github.com/simstm/amphitheatre/releases/tag/v2.0.1
 [2.0.0]: https://github.com/simstm/amphitheatre/releases/tag/v2.0.0
 [1.3.1]: https://github.com/simstm/amphitheatre/releases/tag/v1.3.1

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { RoomBroadcast } from "@coliseum/shared";
 import type { ChatMessage, OmeInfo, ParticipantMedia, Room, RoomMember } from "../shared-types.ts";
+import type { AutoScreenTier } from "../lib/media-quality.ts";
 
 type LivekitStatus = "idle" | "connecting" | "connected" | "reconnecting" | "unavailable";
 
@@ -14,6 +15,7 @@ type RoomState = {
   micEnabled: boolean;
   cameraEnabled: boolean;
   screenEnabled: boolean;
+  screenAutoTier: AutoScreenTier | null;
   chatMutedUntil: number | null;
   localMutedUserIds: Record<string, true>;
   voiceUserIds: Record<string, true>;
@@ -30,6 +32,7 @@ type RoomState = {
   resetMedia: () => void;
   setLivekitStatus: (livekitStatus: LivekitStatus) => void;
   setLivekitCreds: (livekitCreds: { token: string; url: string } | null) => void;
+  setScreenAutoTier: (tier: AutoScreenTier | null) => void;
   setLocalMediaFlags: (flags: {
     micEnabled?: boolean;
     cameraEnabled?: boolean;
@@ -63,6 +66,7 @@ const initial = {
   micEnabled: false,
   cameraEnabled: false,
   screenEnabled: false,
+  screenAutoTier: null,
   chatMutedUntil: null as number | null,
   localMutedUserIds: {} as Record<string, true>,
   voiceUserIds: {} as Record<string, true>,
@@ -110,6 +114,7 @@ export const useRoomStore = create<RoomState>((set) => ({
   resetMedia: () => set({ mediaByUserId: {} }),
   setLivekitStatus: (livekitStatus) => set({ livekitStatus }),
   setLivekitCreds: (livekitCreds) => set({ livekitCreds }),
+  setScreenAutoTier: (screenAutoTier) => set({ screenAutoTier }),
   setLocalMediaFlags: (flags) => set(flags),
   setChatMutedUntil: (until) => set({ chatMutedUntil: until }),
   setLocalMuted: (userId, muted) =>

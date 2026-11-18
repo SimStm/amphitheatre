@@ -19,11 +19,13 @@ sources:
 
 # Rule
 
-Defaults favor quality: screen 1080p at 30 fps up to 8 Mbps, camera 720p at 30 fps up to 2.5 Mbps, and voice at 64 kbps. Settings → Devices lets each person change voice, camera, screen, screen content, and viewing quality. The choices stay in that browser.
+Defaults favor quality: screen sharing is automatic, up to 1080p, and reaches 60 fps only for video and games; camera is 720p at 30 fps up to 2.5 Mbps; voice is 64 kbps. Settings → Call quality lets each person change voice, camera, screen, frame rate, screen content, and viewing quality for room conversations. It does not affect the live stage broadcast. The choices stay in that browser.
 
 Do not turn on `adaptiveStream` for the room. It picks a layer from the size of the video element, which made viewers receive a small layer of a shared screen even with spare bandwidth.
 
 A stream on the viewer's stage uses the viewing choice. A stream outside the stage uses the lowest layer. Simulcast and dynacast stay on, so the server can lower quality for a weak connection and senders stop layers nobody needs.
+
+Screen options show plain upload estimates and warn about heavy choices. The sender's upload does not grow with the number of viewers.
 
 Voice and camera changes republish the live track. Screen changes apply to the next share, because restarting it would reopen the browser picker.
 

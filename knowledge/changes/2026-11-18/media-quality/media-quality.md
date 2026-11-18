@@ -20,7 +20,7 @@ sources:
 
 - Viewers no longer receive a layer chosen from the size of their video element. Streams on their stage use the best layer available.
 - Screen sharing publishes 1080p at 30 fps up to 8 Mbps by default. Camera and voice defaults are also higher.
-- Settings → Devices has choices for viewing, voice, camera, screen, and screen content.
+- Settings → Call quality has choices for viewing, voice, camera, screen, frame rate, and screen content. Screen sharing can adjust itself automatically, and each screen option explains its upload use in plain language.
 - Streams outside the stage use the lowest layer, which leaves bandwidth for the stage.
 - LiveKit's total bandwidth limit moved from 100 Mbps to about 1 Gbps in `infra/` and `deploy/`.
 

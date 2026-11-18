@@ -1,7 +1,7 @@
 {
   "name": "coliseum-theater",
   "private": true,
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Watch party + mini-Discord (OvenMediaEngine + LiveKit + Bun/Hono + Vite)",
   "type": "module",
   "scripts": {

@@ -23,7 +23,7 @@ networks:
 
 services:
   app:
-    image: simstosh/amphitheatre:${AMPHITHEATRE_VERSION:-2.0.1}
+    image: simstosh/amphitheatre:${AMPHITHEATRE_VERSION:-2.0.2}
     container_name: amphitheatre-app
     restart: unless-stopped
     depends_on:

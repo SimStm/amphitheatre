@@ -109,7 +109,7 @@ docker run -d \
   -e ADMIN_BIND=0.0.0.0 \
   -e LIVEKIT_API_KEY=... -e LIVEKIT_API_SECRET=... -e LIVEKIT_URL=wss://your-livekit-host \
   -v amphitheatre-data:/app/data \
-  simstosh/amphitheatre:2.0.1
+  simstosh/amphitheatre:2.0.2
 ```
 
 ## Ports reference

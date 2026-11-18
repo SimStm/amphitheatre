@@ -22,7 +22,7 @@ sources:
 
 # Rule
 
-The dock opens Settings. Tabs, in order: **General**, Stage (admin only), Devices, About last.
+The dock opens Settings. Tabs, in order: **General**, Stage (admin only), Devices, Call quality, About last. Call quality holds only the voice, camera, screen, and viewing choices for room conversations; it does not affect the live stage broadcast.
 
 General holds theme, language, the time before floats hide, **Allow microphone** and **Allow camera** ([media-permissions-need-a-user-gesture](/rules/media-permissions-need-a-user-gesture.md)), and **Install as app** while the session is not a standalone PWA ([pwa-and-native-share](/rules/pwa-and-native-share.md)).
 
