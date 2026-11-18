@@ -35,7 +35,7 @@ services:
 #      - --providers.docker=true
 #      - --providers.docker.exposedbydefault=false
 #      - --entrypoints.web.address=:80
-#      - --entrypoints.websecure.address=:443
+#      - --entrypoints.https.address=:443
 #      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
 #      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
 #      - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
@@ -83,13 +83,16 @@ services:
       start_period: 5s
     labels:
       - traefik.enable=true
+      - docker.traefik=true
+      # Sem isso o Traefik pode escolher o IP da rede amphitheatre (inacessível) → 504.
+      - traefik.docker.network=traefik
       - traefik.http.routers.amphitheatre.rule=Host(`${PUBLIC_APP_HOSTNAME}`)
-      - traefik.http.routers.amphitheatre.entrypoints=websecure
+      - traefik.http.routers.amphitheatre.entrypoints=https
       - traefik.http.routers.amphitheatre.tls.certresolver=letsencrypt
       - traefik.http.routers.amphitheatre.service=amphitheatre
       - traefik.http.services.amphitheatre.loadbalancer.server.port=3001
       - traefik.http.routers.amphitheatre-admin.rule=Host(`${PUBLIC_APP_ADMIN_HOSTNAME}`)
-      - traefik.http.routers.amphitheatre-admin.entrypoints=websecure
+      - traefik.http.routers.amphitheatre-admin.entrypoints=https
       - traefik.http.routers.amphitheatre-admin.tls.certresolver=letsencrypt
       - traefik.http.routers.amphitheatre-admin.service=amphitheatre-admin
       - traefik.http.services.amphitheatre-admin.loadbalancer.server.port=3002
@@ -140,8 +143,10 @@ services:
       start_period: 10s
     labels:
       - traefik.enable=true
+      - docker.traefik=true
+      - traefik.docker.network=traefik
       - traefik.http.routers.amphitheatre-livekit.rule=Host(`${PUBLIC_LIVEKIT_HOSTNAME}`)
-      - traefik.http.routers.amphitheatre-livekit.entrypoints=websecure
+      - traefik.http.routers.amphitheatre-livekit.entrypoints=https
       - traefik.http.routers.amphitheatre-livekit.tls.certresolver=letsencrypt
       - traefik.http.services.amphitheatre-livekit.loadbalancer.server.port=7880
 
@@ -182,8 +187,10 @@ services:
       start_period: 15s
     labels:
       - traefik.enable=true
+      - docker.traefik=true
+      - traefik.docker.network=traefik
       - traefik.http.routers.amphitheatre-ome.rule=Host(`${PUBLIC_OME_HOSTNAME}`)
-      - traefik.http.routers.amphitheatre-ome.entrypoints=websecure
+      - traefik.http.routers.amphitheatre-ome.entrypoints=https
       - traefik.http.routers.amphitheatre-ome.tls.certresolver=letsencrypt
       - traefik.http.services.amphitheatre-ome.loadbalancer.server.port=3333
 

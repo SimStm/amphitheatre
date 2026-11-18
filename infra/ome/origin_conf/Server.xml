@@ -163,8 +163,8 @@
 					<Name>app</Name>
 					<Type>live</Type>
 					<OutputProfiles>
-						<!-- ABR: 1080 stays bypass (OBS encode). 720/480 are software transcodes (CPU-heavy).
-						     Playlist FileName llhls keeps existing /llhls.m3u8 URLs. OBS GOP must be 1-2 s. -->
+						<!-- ABR: Original is a bypass of the OBS encode; 1080p/720p/480p are software
+						     transcodes (CPU-heavy, OpenH264). OBS keyframe interval must be 1-2 s. -->
 						<OutputProfile>
 							<Name>abr_stream</Name>
 							<OutputStreamName>${OriginStreamName}</OutputStreamName>
@@ -177,8 +177,13 @@
 									<HLSChunklistPathDepth>0</HLSChunklistPathDepth>
 								</Options>
 								<Rendition>
-									<Name>1080p</Name>
+									<Name>Original</Name>
 									<Video>bypass_video</Video>
+									<Audio>aac_audio</Audio>
+								</Rendition>
+								<Rendition>
+									<Name>1080p</Name>
+									<Video>video_1080</Video>
 									<Audio>aac_audio</Audio>
 								</Rendition>
 								<Rendition>
@@ -199,8 +204,13 @@
 									<WebRtcAutoAbr>true</WebRtcAutoAbr>
 								</Options>
 								<Rendition>
-									<Name>1080p</Name>
+									<Name>Original</Name>
 									<Video>bypass_video</Video>
+									<Audio>opus_audio</Audio>
+								</Rendition>
+								<Rendition>
+									<Name>1080p</Name>
+									<Video>video_1080</Video>
 									<Audio>opus_audio</Audio>
 								</Rendition>
 								<Rendition>
@@ -220,28 +230,46 @@
 									<Bypass>true</Bypass>
 								</Video>
 								<Video>
+									<Name>video_1080</Name>
+									<Codec>h264</Codec>
+									<Bitrate>6000000</Bitrate>
+									<Width>1920</Width>
+									<Height>1080</Height>
+									<Framerate>30</Framerate>
+									<KeyFrameInterval>30</KeyFrameInterval>
+									<Preset>fast</Preset>
+									<BFrames>0</BFrames>
+									<ThreadCount>4</ThreadCount>
+									<Profile>baseline</Profile>
+									<Lookahead>10</Lookahead>
+								</Video>
+								<Video>
 									<Name>video_720</Name>
 									<Codec>h264</Codec>
-									<Bitrate>2500000</Bitrate>
+									<Bitrate>4000000</Bitrate>
 									<Width>1280</Width>
 									<Height>720</Height>
 									<Framerate>30</Framerate>
-									<Preset>faster</Preset>
+									<KeyFrameInterval>30</KeyFrameInterval>
+									<Preset>fast</Preset>
 									<BFrames>0</BFrames>
-									<ThreadCount>2</ThreadCount>
+									<ThreadCount>4</ThreadCount>
 									<Profile>baseline</Profile>
+									<Lookahead>10</Lookahead>
 								</Video>
 								<Video>
 									<Name>video_480</Name>
 									<Codec>h264</Codec>
-									<Bitrate>800000</Bitrate>
+									<Bitrate>1200000</Bitrate>
 									<Width>854</Width>
 									<Height>480</Height>
 									<Framerate>30</Framerate>
-									<Preset>faster</Preset>
+									<KeyFrameInterval>30</KeyFrameInterval>
+									<Preset>fast</Preset>
 									<BFrames>0</BFrames>
-									<ThreadCount>2</ThreadCount>
+									<ThreadCount>4</ThreadCount>
 									<Profile>baseline</Profile>
+									<Lookahead>5</Lookahead>
 								</Video>
 								<Audio>
 									<Name>aac_audio</Name>
