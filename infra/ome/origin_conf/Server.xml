@@ -89,7 +89,7 @@
 	  REST API auth: Authorization: Basic base64(AccessToken)
 	  Example token coliseum-dev-ome-token-change-me →
 	  Authorization: Basic Y29saXNldW0tZGV2LW9tZS10b2tlbi1jaGFuZ2UtbWU=
-	  Keep this in sync with OME_API_ACCESS_TOKEN in .env
+	  The token comes from OME_API_ACCESS_TOKEN in .env, through docker-compose.yml.
 	-->
 	<Managers>
 		<Host>
@@ -105,7 +105,7 @@
 			-->
 		</Host>
 		<API>
-			<AccessToken>coliseum-dev-ome-token-change-me</AccessToken>
+			<AccessToken>${env:OME_API_ACCESS_TOKEN:coliseum-dev-ome-token-change-me}</AccessToken>
 			<CrossDomains>
 				<Url>*</Url>
 				<Url>http://localhost:5173</Url>

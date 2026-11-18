@@ -1,39 +1,21 @@
 import { IconUsers } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import type { ParticipantMedia, Role, RoomMember } from "../../shared-types.ts";
-import { useRoomStore } from "../../stores/room-store.ts";
+import type { RoomPeople, RoomPerson } from "../../lib/room-people.ts";
+import type { Role } from "../../shared-types.ts";
 import { MemberRow } from "./member-row.tsx";
 
 type MemberListProps = {
-  members: RoomMember[];
-  selfId?: string;
+  people: RoomPeople;
   actorRole?: Role;
   omeLive: boolean;
-  mediaByUserId: Record<string, ParticipantMedia>;
   roomId: string;
+  localMutedUserIds: Record<string, true>;
 };
 
-export function MemberList({
-  members,
-  selfId,
-  actorRole,
-  omeLive,
-  mediaByUserId,
-  roomId,
-}: MemberListProps) {
+export function MemberList({ people, actorRole, omeLive, roomId, localMutedUserIds }: MemberListProps) {
   const { t } = useTranslation();
-  const localMutedUserIds = useRoomStore((s) => s.localMutedUserIds);
-  const visible = members.filter((member) => member.present);
-  const sorted = [...visible].sort((a, b) => {
-    const rank = (role: Role) =>
-      role === "owner" ? 0 : role === "admin" ? 1 : role === "moderator" ? 2 : 3;
-    const roleDelta = rank(a.role) - rank(b.role);
-    if (roleDelta !== 0) return roleDelta;
-    if (a.connected !== b.connected) return a.connected ? -1 : 1;
-    return a.displayName.localeCompare(b.displayName);
-  });
 
-  if (sorted.length === 0) {
+  if (people.voice.length === 0 && people.chatOnly.length === 0) {
     return (
       <div className="flex flex-col items-start gap-2 p-4 text-ink-muted">
         <IconUsers aria-hidden="true" />
@@ -43,20 +25,32 @@ export function MemberList({
     );
   }
 
+  const group = (title: string, items: RoomPerson[]) =>
+    items.length > 0 ? (
+      <section className="flex flex-col gap-1">
+        <h3 className="flex justify-between px-2 pb-1 font-display text-xs font-bold text-ink-subtle">
+          {title}
+          <span className="font-normal">{items.length}</span>
+        </h3>
+        <ul className="flex flex-col gap-0.5">
+          {items.map((person) => (
+            <MemberRow
+              key={person.member.userId}
+              person={person}
+              actorRole={actorRole}
+              omeLive={omeLive}
+              roomId={roomId}
+              localMuted={Boolean(localMutedUserIds[person.member.userId])}
+            />
+          ))}
+        </ul>
+      </section>
+    ) : null;
+
   return (
-    <ul className="space-y-3 h-full overflow-y-auto p-4" aria-label={t("a11y.membersRegion")}>
-      {sorted.map((member) => (
-        <MemberRow
-          key={member.userId}
-          member={member}
-          selfId={selfId}
-          actorRole={actorRole}
-          omeLive={omeLive}
-          media={mediaByUserId[member.userId]}
-          roomId={roomId}
-          localMuted={Boolean(localMutedUserIds[member.userId])}
-        />
-      ))}
-    </ul>
+    <div className="flex h-full flex-col gap-4 overflow-y-auto p-2.5" aria-label={t("a11y.membersRegion")}>
+      {group(t("room.inVoice"), people.voice)}
+      {group(t("room.chatOnly"), people.chatOnly)}
+    </div>
   );
 }

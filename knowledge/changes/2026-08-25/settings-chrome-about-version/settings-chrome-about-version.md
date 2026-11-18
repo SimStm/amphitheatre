@@ -38,7 +38,7 @@ Flood options looked loosely stacked. Devices did not match the Discord two-colu
 
 # Related
 
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
 - [Mobile first-class separate layout](/rules/mobile-first-class-separate-layout.md)
 - [CHANGELOG and release process](/rules/changelog-and-release-process.md)
 - [Clients](/product/clients/clients.md)

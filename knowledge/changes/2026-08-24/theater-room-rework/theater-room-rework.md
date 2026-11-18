@@ -33,6 +33,6 @@ The old stage filled the screen with the stream and hid shares without scroll. A
 # Related
 
 - [Broadcast opt-in](/rules/broadcast-opt-in.md)
-- [Room follows HTML prototype](/rules/room-follows-html-prototype.md)
-- [Stage pin grid](/rules/stage-pin-grid.md)
+- [Room follows HTML prototype](/rules/room-floating-interface.md)
+- [Stage pin grid](/rules/stage-selection-per-viewer.md)
 - [OME broadcast](/product/ome-broadcast/ome-broadcast.md)

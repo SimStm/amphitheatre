@@ -25,4 +25,4 @@ Safari and mobile often returned a permission error without ever showing the sys
 # Related
 
 - [Media permissions need a user gesture](/rules/media-permissions-need-a-user-gesture.md)
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)

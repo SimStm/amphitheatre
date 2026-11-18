@@ -1,7 +1,7 @@
 {
   "name": "coliseum-theater",
   "private": true,
-  "version": "1.3.1",
+  "version": "2.0.0",
   "description": "Watch party + mini-Discord (OvenMediaEngine + LiveKit + Bun/Hono + Vite)",
   "type": "module",
   "scripts": {
@@ -18,7 +18,7 @@
     "infra:smoke": "make smoke"
   },
   "engines": {
-    "node": ">=20",
+    "node": ">=22.12",
     "pnpm": ">=10"
   },
   "packageManager": "pnpm@11.22.0",

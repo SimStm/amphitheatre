@@ -11,7 +11,7 @@ sources:
     title: speaking, transmitting, quality, presence
   - id: member-row
     resource: apps/web/src/components/theater/member-row.tsx
-    title: Badges and ConnectionIndicator
+    title: Status text and SignalBars
   - id: livekit-hook
     resource: apps/web/src/hooks/use-livekit.ts
     title: connectionQuality and tracks
@@ -22,6 +22,8 @@ sources:
 
 # Rule
 
+Owners, admins, and moderators are marked with their own icon and color in the room's left rail, people panel, member details, and next to chat names. Plain members have no mark. These colors mean only the role, and the role is also available as text for screen readers.
+
 Every member list / media tile must make visible:
 
 1. **Speaking** — who is talking (active speaker / `presence.update` / `speaking` event)
@@ -29,7 +31,7 @@ Every member list / media tile must make visible:
 3. **Quality** — `excellent` | `good` | `poor` | `lost` from `participant.connectionQuality` (`quality` event)
 4. **Adaptive** — when the transport allows it (LiveKit simulcast; OME ABR only if enabled in XML). Expose in the UI if the layer dropped (`ParticipantMedia.adaptive` on the client)
 
-Do not hide quality behind an icon with no accessible text. `ConnectionIndicator` uses a Tabler icon + i18n string.[^member-row]
+Do not hide quality behind an icon with no accessible text. `SignalBars` carries an i18n label, and the people rail and stream cards put every state in the button's accessible name.[^member-row]
 
 Server events frozen in shared: `speaking`, `transmitting`, `quality`, `presence`.[^events][^livekit-hook]
 

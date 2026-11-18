@@ -29,6 +29,6 @@ Devices camera preview starts only after a tap on **Start camera preview**. Mic 
 
 # Related
 
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Room settings and devices](/rules/room-settings-and-devices.md)
 - [LiveKit media](/product/livekit-media/livekit-media.md)
 - [LiveKit remote audio must play](/rules/livekit-remote-audio-must-play.md)

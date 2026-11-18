@@ -6,9 +6,36 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-18
+
+Amphitheatre 2.0 is a full visual redesign. The home page, join flow, and room now share one design system, and the room becomes a full-screen stage with floating controls. Each person chooses what fills their own screen, and the interface gets out of the way while you watch.
+
+Rooms, roles, moderation, and the API work as before. To update a self-hosted install, use the Compose files in `deploy/` or the image `simstosh/amphitheatre:2.0.0`.
+
 ### Added
 
+- Public or private choice when creating a room, a live list of public rooms, and a dedicated dialog for each join problem (password, full room, invalid invite). ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- Room stage selection per person: one stream full screen or several in a grid that resizes by itself. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- Show or hide control for the room interface, with automatic hiding after a time set in Settings. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- Owners, admins, and moderators stand out with their own icon and color in the people rail, people panel, member details, and chat. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- Design rules in `apps/web/DESIGN.md` and a Storybook for base components. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
 - Contributor workflow: a short spec, plan, and task list before each feature or fix. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/agents-knowledge-roadmap))
+
+### Changed
+
+- New home page, join dialogs, and full-screen room following the Figma design, with new animation on desktop and mobile. The original logo stays on every screen, and the home page keeps its moving floor and name field. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- The About and What is Amphitheatre pages use the new header, buttons, cards, settings, and footer. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- Updated dependencies, base images, and pinned Compose images. Node 22.12 or newer is now required for web tooling. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+
+### Fixed
+
+- People in the room's left rail open a popover beside them, with the same options as before, replacing a dialog that could not be closed with the mouse. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- Opening the chat no longer shifts the whole room sideways. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
+- The development LiveKit and OvenMediaEngine containers accept custom keys from `.env`, so LiveKit no longer restarts in a loop. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/dev-media-keys-from-env))
+
+### Removed
+
+- The room header dock, side columns, and pin grid, replaced by the floating room interface. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/room-redesign))
 
 ## [1.3.1] - 2026-08-27
 
@@ -102,7 +129,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 - Multi-arch Docker release build: pin the JS-only `deps`/`build` stages in `Dockerfile` to `--platform=$BUILDPLATFORM` so `pnpm install`/`vite build` run natively on the runner instead of crashing under QEMU emulation ("illegal instruction") while cross-building `linux/arm64`.
 
-[Unreleased]: https://github.com/simstm/amphitheatre/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/simstm/amphitheatre/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/simstm/amphitheatre/releases/tag/v2.0.0
 [1.3.1]: https://github.com/simstm/amphitheatre/releases/tag/v1.3.1
 [1.2.0]: https://github.com/simstm/amphitheatre/releases/tag/v1.2.0
 [1.1.0]: https://github.com/simstm/amphitheatre/releases/tag/v1.1.0

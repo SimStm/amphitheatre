@@ -23,5 +23,5 @@ With the dock in the header, bottom padding left an empty strip on the stage. Th
 
 # Related
 
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
 - [App name is Amphitheatre](/rules/app-name-amphitheatre.md)

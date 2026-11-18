@@ -31,7 +31,7 @@ Mobile Home had left-aligned hero copy, two stacked action cards that overflowed
 
 # Related
 
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Home follows HTML prototype](/rules/home-and-join-follow-figma.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
 - [Mobile first-class separate layout](/rules/mobile-first-class-separate-layout.md)
 - [Clients](/product/clients/clients.md)

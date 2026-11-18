@@ -6,7 +6,7 @@
 
 [![License](https://img.shields.io/badge/license-AGPL--3.0-orange)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker%20Hub-simstosh%2Famphitheatre-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/simstosh/amphitheatre)
-[![LiveKit](https://img.shields.io/badge/LiveKit-v1.13.5-blue)](https://livekit.io)
+[![LiveKit](https://img.shields.io/badge/LiveKit-v1.13.11-blue)](https://livekit.io)
 [![OME](https://img.shields.io/badge/OME-v0.21.0-orange)](https://github.com/OvenMediaLabs/OvenMediaEngine)
 
 A private online room for you and your friends: text chat, voice, camera, screen share, and — if you want — everyone watching the same live stream together. No sign-up, no ads, and you own the server it runs on.
@@ -59,7 +59,7 @@ That downloads ready-made images from [Docker Hub](https://hub.docker.com/r/sims
 Just kicking the tires on your own computer? A single command gets the app itself running (though voice/video needs the LiveKit piece too — see the guide):
 
 ```bash
-docker run -p 3001:3001 -p 127.0.0.1:3002:3002 -e SESSION_SECRET=change-me -e ADMIN_BIND=0.0.0.0 simstosh/amphitheatre:latest
+docker run -p 3001:3001 -p 127.0.0.1:3002:3002 -e SESSION_SECRET=change-me -e ADMIN_BIND=0.0.0.0 simstosh/amphitheatre:2.0.0
 ```
 
 ### "I want to change the code / contribute"

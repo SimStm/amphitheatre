@@ -19,13 +19,13 @@ sources:
 
 # Rule
 
-Tokens in `apps/web/src/index.css`: surfaces (`surface-page`, `surface-raised`, `surface-sunken`), ink (`ink`, `ink-muted`, `ink-subtle`, `ink-on-accent`), accent, border, danger/success/warning/info, overlay, radii (`radius-control`, `radius-panel`, `radius-pill`).[^css]
+Tokens in `apps/web/src/index.css`, with the dark values taken from the Figma Fundamentos page: surfaces (`surface-page`, `surface-raised`, `surface-sunken`, `surface-row`, `surface-bright`, `surface-float`), ink (`ink` through `ink-off`, `ink-on-accent`), accent, border, danger, speaking, selfhost, attention, radii (`radius-tile`, `radius-control`, `radius-panel`, `radius-pill`). The light theme is derived from the same names; the Figma file has no light screens.[^css]
 
 Theme: `document.documentElement.dataset.theme = "light" | "dark"`. The user choice lives in Zustand persist `coliseum.ui` (`theme`); locale **does not** enter that persist (it lives in `coliseum.locale` only after an explicit choice).[^ui] Tailwind variant: `@custom-variant dark (&:where([data-theme="dark"], ...))`.
 
 In component JSX/CSS use theme utilities (`bg-surface-page`, `text-ink`, `border-border`, `bg-accent`). Do not invent a parallel palette. Narrow exception: video player `bg-black` on the stage (content, not chrome).
 
-Fonts: Hanken Grotesk (display), Raleway (sans), and Quicksand (label), already imported. Aligned with the prototype `knowledge/references/prototypes/home.html`.
+Fonts: Hanken Grotesk (titles) and Raleway (text), behind `--font-display` and `--font-sans`. See [apps/web/DESIGN.md](https://github.com/simstm/amphitheatre/blob/main/apps/web/DESIGN.md) and [Figma Fundamentos are the visual source](/rules/figma-fundamentos-visual-source.md).
 
 Do not add DaisyUI/shadcn “as the house default” if the theater already has this system — this repo **does not** use the Next/shadcn stack; it is Vite + its own tokens.
 

@@ -19,13 +19,16 @@ Code and process rules. The agent must apply them; if the user changes a durable
 * [Valkey for LiveKit](valkey-for-livekit.md) - Valkey RESP, not Redis Ltd.
 * [Pin Compose images](pin-compose-images.md) - semver tags; no latest
 * [OME WebRTC first ABR](ome-webrtc-first-abr.md) - OvenPlayer; WebRTC first; ABR on the server
-* [Home follows HTML prototype](home-follows-html-prototype.md) - Home visually faithful to home.html; mock cards/nav are not product
-* [Site editorial pages](site-editorial-pages.md) - /what-is and /about are full-bleed; What-is names no competing products
-* [Room follows HTML prototype](room-follows-html-prototype.md) - room faithful to room.html / room-chat.html
-* [Stage pin grid](stage-pin-grid.md) - auto-grid + pins
+* [Home and join follow Figma](home-and-join-follow-figma.md) - frames 1.2, 1.4, 1.5, 1.6; one dialog per join failure
+* [Site editorial pages](site-editorial-pages.md) - /what-is and /about share the home shell and cards; What-is names no competing products
+* [Original logo on every screen](original-logo-everywhere.md) - keep the original wordmark and symbol; never redraw them
+* [Room floating interface](room-floating-interface.md) - full-screen stage; floats from 1.3e and 1.3d hide on demand and when idle
+* [Stage selection per viewer](stage-selection-per-viewer.md) - each person picks one stream or a resizing grid
 * [Broadcast opt-in](broadcast-opt-in.md) - stream off by default; secret key
 * [App name is Amphitheatre](app-name-amphitheatre.md) - visible name Amphitheatre; @coliseum/* packages unchanged
-* [Theater header chrome](theater-header-chrome.md) - desktop dock in the header; mobile bottom bar; hamburger; mic test loopback
+* [Room settings and devices](room-settings-and-devices.md) - settings tabs, device grid, mic test loopback
+* [Figma Fundamentos are the visual source](figma-fundamentos-visual-source.md) - tokens, type, icons, indicators, Motion
+* [Storybook for base components](storybook-for-base-components.md) - every ui component has a story; lint enforces it
 * [PWA and native share](pwa-and-native-share.md) - installable PWA; icon canvas #2e1b08; locale-aware invite share
 * [Join errors are explicit](join-errors-are-explicit.md) - GET preview for existing rooms; not_found vs invalid_password
 * [Media permissions need a user gesture](media-permissions-need-a-user-gesture.md) - Allow mic/camera in General; no getUserMedia in useEffect

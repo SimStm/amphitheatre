@@ -22,6 +22,6 @@ The About content lived only inside a room Settings modal. New visitors on Home 
 
 # Related
 
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Home follows HTML prototype](/rules/home-and-join-follow-figma.md)
 - [Clients](/product/clients/clients.md)
 - [App name is Amphitheatre](/rules/app-name-amphitheatre.md)

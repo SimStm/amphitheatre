@@ -36,6 +36,6 @@ Mobile screenshots showed overlapping header controls, a header dock with empty 
 # Related
 
 - [Mobile first-class separate layout](/rules/mobile-first-class-separate-layout.md)
-- [Theater header chrome](/rules/theater-header-chrome.md)
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
+- [Home follows HTML prototype](/rules/home-and-join-follow-figma.md)
 - [Clients](/product/clients/clients.md)

@@ -47,13 +47,15 @@ Rules the agent must apply when writing code.
 * [Valkey for LiveKit](rules/valkey-for-livekit.md) - Valkey RESP for LiveKit; not Redis Ltd.
 * [Pin Compose images](rules/pin-compose-images.md) - semver tags in Compose; no latest
 * [OME WebRTC first ABR](rules/ome-webrtc-first-abr.md) - OvenPlayer; WebRTC first; ABR on the server
-* [Home follows HTML prototype](rules/home-follows-html-prototype.md) - Home faithful to home.html; mock nav/cards are not a feature
+* [Home and join follow Figma](rules/home-and-join-follow-figma.md) - frames 1.2, 1.4, 1.5, 1.6; one dialog per join failure
 * [Site editorial pages](rules/site-editorial-pages.md) - /what-is and /about are full-bleed; What-is names no competing products
-* [Room follows HTML prototype](rules/room-follows-html-prototype.md) - room faithful to room.html / room-chat.html
-* [Stage pin grid](rules/stage-pin-grid.md) - auto-grid + pins on the stage
+* [Room floating interface](rules/room-floating-interface.md) - full-screen stage; floats hide on demand and when idle
+* [Stage selection per viewer](rules/stage-selection-per-viewer.md) - each person picks one stream or a resizing grid
 * [Broadcast opt-in](rules/broadcast-opt-in.md) - stream off by default; secret key; embeds
 * [App name is Amphitheatre](rules/app-name-amphitheatre.md) - visible name Amphitheatre; @coliseum/* ids unchanged
-* [Theater header chrome](rules/theater-header-chrome.md) - desktop dock in the header; mobile bottom bar; hamburger; mic test loopback
+* [Room settings and devices](rules/room-settings-and-devices.md) - settings tabs, device grid, mic test loopback
+* [Figma Fundamentos are the visual source](rules/figma-fundamentos-visual-source.md) - tokens, type, icons, indicators, Motion
+* [Storybook for base components](rules/storybook-for-base-components.md) - every ui component has a story; lint enforces it
 * [PWA and native share](rules/pwa-and-native-share.md) - installable PWA; icon canvas #2e1b08; locale-aware invite share
 * [Join errors are explicit](rules/join-errors-are-explicit.md) - GET preview for existing rooms; not_found vs invalid_password
 * [Media permissions need a user gesture](rules/media-permissions-need-a-user-gesture.md) - Allow mic/camera in General; no getUserMedia in useEffect
@@ -71,7 +73,7 @@ Rules the agent must apply when writing code.
 
 What landed in the code, by date. One directory per feature.
 
-* [2026-11-18](changes/2026-11-18/) - Agent workflow: spec/plan/tasks before code, CHANGELOG entries linked to bundles, roadmap kept in the private docs repository
+* [2026-11-18](changes/2026-11-18/) - Agent workflow: spec/plan/tasks before code, CHANGELOG entries linked to bundles, roadmap kept in the private docs repository; room redesign from the Figma file
 * [2026-08-25](changes/2026-08-25/) - Operator occupancy/reset; operator admin console; Home join/create tabs; fullscreen appearance sheet with guest avatar; empty desktop stage centered; room QOL (General settings, unread chat, mobile drawer); Settings chrome, About version, integrated mobile tabs; About author link; YouTube embed Referer (Error 153); PWA install and native invite share; explicit join errors; mic/camera permission prompts; What is / About pages; editorial What is / About layout
 * [2026-08-24](changes/2026-08-24/) - InfiniteGrid3D on the Home background; Tabler Icons; browser locale; room rework (pin/grid, broadcast opt-in); QOL header/chat/About/logos; 404 + Leave modal + player reload; full-height stage and horizontal wordmark; settings modal (tabs, AGPLv3 About, reload in chrome); AGPLv3 + ICLA; English README, split docs, and OKF catalog; LiveKit remote audio playback and screen-share sound
 * [2026-08-23](changes/2026-08-23/) - Amphitheatre name; OME ABR + OvenPlayer; Home faithful to HTML; WebRTC on the default playlist (not /llhls); LL-HLS stage; LiveKit/OME/Valkey/Caddy pins; OME XML v0.21

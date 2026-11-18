@@ -2,35 +2,38 @@ import type { LabelHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../lib/cn.ts";
 
 export function Label({ className, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
-  return <label className={cn("label-caps text-ink-muted", className)} {...props} />;
+  return <label className={cn("text-[13px] leading-4 text-ink-muted", className)} {...props} />;
 }
 
-type FieldProps = {
+export function Field({
+  id,
+  label,
+  hint,
+  error,
+  optional,
+  children,
+}: {
   id: string;
   label: string;
   hint?: string;
   error?: string;
   optional?: string;
   children: ReactNode;
-};
-
-export function Field({ id, label, hint, error, optional, children }: FieldProps) {
-  const hintId = hint ? `${id}-hint` : undefined;
-  const errorId = error ? `${id}-error` : undefined;
+}) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-baseline justify-between gap-2">
+    <div className="flex flex-col gap-2">
+      <div className="flex items-baseline gap-1.5">
         <Label htmlFor={id}>{label}</Label>
-        {optional ? <span className="text-xs text-ink-subtle">{optional}</span> : null}
+        {optional ? <span className="text-[13px] leading-4 text-ink-faint">{optional}</span> : null}
       </div>
       {children}
       {hint && !error ? (
-        <p id={hintId} className="text-xs text-ink-muted">
+        <p id={`${id}-hint`} className="text-[12.5px] leading-4 text-ink-subtle">
           {hint}
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className="text-xs text-danger" role="alert">
+        <p id={`${id}-error`} role="alert" className="text-[12.5px] font-bold leading-4 text-danger-text">
           {error}
         </p>
       ) : null}

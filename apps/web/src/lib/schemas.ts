@@ -14,22 +14,16 @@ export const createRoomSchema = z.object({
     .trim()
     .min(limits.roomName.min, "validation.roomNameMin")
     .max(limits.roomName.max, "validation.roomNameMax"),
+  visibility: z.enum(["public", "private"]),
   password: z.string().max(limits.roomPassword.max),
-  memberLimit: z
-    .number()
-    .min(limits.memberLimit.min, "validation.memberLimit")
-    .max(limits.memberLimit.max, "validation.memberLimit"),
 });
 
-export const joinRoomSchema = z.object({
-  displayName: displayNameSchema,
+export const joinCodeSchema = z.object({
   roomId: z.string().trim().min(1, "validation.roomIdRequired"),
-  password: z.string().max(limits.roomPassword.max),
 });
 
-export const gateJoinSchema = z.object({
+export const nameSchema = z.object({
   displayName: displayNameSchema,
-  password: z.string().max(limits.roomPassword.max),
 });
 
 export const chatSchema = z.object({
@@ -41,5 +35,5 @@ export const chatSchema = z.object({
 });
 
 export type CreateRoomValues = z.infer<typeof createRoomSchema>;
-export type JoinRoomValues = z.infer<typeof joinRoomSchema>;
-export type GateJoinValues = z.infer<typeof gateJoinSchema>;
+export type JoinCodeValues = z.infer<typeof joinCodeSchema>;
+export type NameValues = z.infer<typeof nameSchema>;

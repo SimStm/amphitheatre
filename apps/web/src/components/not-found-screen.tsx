@@ -24,13 +24,7 @@ export function NotFoundScreen({ kind = "page" }: NotFoundScreenProps) {
 
   return (
     <div className="home-shell relative flex min-h-dvh flex-col overflow-x-hidden">
-      <InfiniteGrid3D
-        cellWidth={80}
-        cellHeight={35}
-        lineWidth={2}
-        perspective={300}
-        duration={1}
-      />
+      <InfiniteGrid3D />
       <SkipLink />
       <main
         id="main"

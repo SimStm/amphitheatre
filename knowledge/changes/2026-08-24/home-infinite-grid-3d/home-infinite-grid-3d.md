@@ -16,7 +16,7 @@ sources:
     resource: apps/web/src/index.css
     title: Grid styles
   - id: rule
-    resource: /rules/home-follows-html-prototype.md
+    resource: /rules/home-and-join-follow-figma.md
     title: Home follows HTML prototype
   - id: pen
     resource: https://codepen.io/TonyBaldascino/pen/ZOjXBp
@@ -36,6 +36,6 @@ Request to apply the 3D Infinite Grid effect (CodePen ZOjXBp) on the Home backgr
 
 # Related
 
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Home follows HTML prototype](/rules/home-and-join-follow-figma.md)
 - [Clients](/product/clients/clients.md)
 - [Design tokens light dark](/rules/design-tokens-light-dark.md)

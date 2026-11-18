@@ -26,6 +26,6 @@ A narrow card fought the reading task. Visitors needed a clearer story of what A
 # Related
 
 - [Site editorial pages](/rules/site-editorial-pages.md)
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Home follows HTML prototype](/rules/home-and-join-follow-figma.md)
 - [Clients](/product/clients/clients.md)
 - [i18n en pt es](/rules/i18n-en-pt-es.md)

@@ -1,7 +1,7 @@
 ---
 type: Rule
 title: Not found infinite grid
-description: Unknown route or missing room uses the Home InfiniteGrid3D background, with title, copy, and home button centered.
+description: An unknown route uses the InfiniteGrid3D background, with title, copy, and home button centered. A missing room opens the invalid-invite dialog instead.
 tags: [web, home, ux]
 status: stable
 generated: { by: coding_agent/composer, at: 2026-08-24T06:40:00Z }
@@ -16,14 +16,14 @@ sources:
 
 # Rule
 
-Pages that do not exist (`/anything`) and room URLs whose `GET /api/rooms/:id` returns 404 or 400 (invalid id) render `NotFoundScreen`: the same `InfiniteGrid3D` as Home, content **centered** (mark, title, copy, button to `/`). No JoinGate in that case.
+Pages that do not exist (`/anything`) render `NotFoundScreen`: `InfiniteGrid3D`, content **centered** (mark, title, copy, button to `/`).
 
-A room that **exists** (including private / password-protected) must **not** use this 404 screen. `GET /api/rooms/:id` returns a preview so the invite can open JoinGate. See [join-errors-are-explicit](/rules/join-errors-are-explicit.md).
+Room URLs never use this screen. A missing room opens the invalid-invite dialog with the code, and an existing room opens the join flow. See [home-and-join-follow-figma](/rules/home-and-join-follow-figma.md) and [join-errors-are-explicit](/rules/join-errors-are-explicit.md).
 
 Copy in `en` / `pt-BR` / `es`. No emoji.
 
 # Related
 
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Home and join follow Figma](/rules/home-and-join-follow-figma.md)
 - [Identity and roles](/product/identity-and-roles/identity-and-roles.md)
 - [i18n en pt es](/rules/i18n-en-pt-es.md)

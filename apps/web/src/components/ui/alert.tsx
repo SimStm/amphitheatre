@@ -1,48 +1,35 @@
-import { IconAlertTriangle, IconBroadcast, IconInfoCircle } from "@tabler/icons-react";
+import { IconAlertTriangle, IconInfoCircle } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 import { cn } from "../../lib/cn.ts";
 
-type AlertProps = {
-  tone?: "info" | "warning" | "danger";
+const tones = {
+  info: "border-border-input bg-surface-bright text-ink-muted",
+  warning: "border-transparent bg-attention-soft text-attention-text",
+  danger: "border-transparent bg-danger-soft text-danger-text",
+} as const;
+
+export function Alert({
+  tone = "info",
+  title,
+  children,
+  className,
+}: {
+  tone?: keyof typeof tones;
   title: string;
   children?: ReactNode;
   className?: string;
-};
-
-export function Alert({ tone = "info", title, children, className }: AlertProps) {
+}) {
   const Icon = tone === "info" ? IconInfoCircle : IconAlertTriangle;
   return (
     <div
       role="status"
-      className={cn(
-        "flex gap-3 rounded-[var(--radius-panel)] border p-3",
-        tone === "info" && "border-border bg-surface-sunken",
-        tone === "warning" && "border-warning/40 bg-accent-soft",
-        tone === "danger" && "border-danger/40 bg-danger-soft",
-        className,
-      )}
+      className={cn("flex gap-3 rounded-[var(--radius-control)] border p-3 text-sm", tones[tone], className)}
     >
-      <Icon className="mt-0.5 size-5 shrink-0 text-ink" aria-hidden="true" />
+      <Icon aria-hidden size={18} stroke={1.75} className="mt-0.5 shrink-0" />
       <div className="min-w-0">
-        <p className="font-medium text-ink">{title}</p>
-        {children ? <p className="mt-1 text-sm text-ink-muted">{children}</p> : null}
+        <p className="font-display font-bold">{title}</p>
+        {children ? <div className="mt-1 text-ink-muted">{children}</div> : null}
       </div>
     </div>
-  );
-}
-
-export function LiveBanner({ live, label }: { live: boolean; label: string }) {
-  return (
-    <span
-      className={cn(
-        "label-caps inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1",
-        live
-          ? "border-accent/40 bg-accent-soft text-accent"
-          : "border-border bg-surface-sunken/70 text-ink-muted",
-      )}
-    >
-      <IconBroadcast className={cn("size-3.5", live ? "text-accent" : "text-ink-subtle")} aria-hidden="true" />
-      {label}
-    </span>
   );
 }

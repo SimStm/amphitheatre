@@ -88,12 +88,12 @@ Human walkthrough: [docs/getting-started.md](docs/getting-started.md).
 | Tool | Use |
 |---|---|
 | pnpm 10+ (`packageManager`: pnpm@11.22.0) | workspace, Vite |
-| Bun 1.2+ | API runtime, `bun test`, native SQLite |
-| Node >= 20 | only if Vite/pnpm needs it on the host; the API does not run on Node |
+| Bun 1.4+ | API runtime, `bun test`, native SQLite |
+| Node >= 22.12 | Vite, Storybook, and pnpm on the host (the image builds on Node 24); the API does not run on Node |
 | Docker Compose v2 | LiveKit, Valkey, OME (profile), Caddy (profile) |
-| LiveKit server v1.13.5 | voice/camera/screen SFU (`livekit/livekit-server:v1.13.5`) |
+| LiveKit server v1.13.11 | voice/camera/screen SFU (`livekit/livekit-server:v1.13.11`) |
 | OvenMediaEngine v0.21.0 | RTMP ingest + WebRTC/LL-HLS playback (optional) |
-| Valkey 9.1.1 | RESP for LiveKit DB 1 (`valkey/valkey:9.1.1-alpine`; Compose service `redis`) |
+| Valkey 9.1.3 | RESP for LiveKit DB 1 (`valkey/valkey:9.1.3-alpine`; Compose service `redis`) |
 | SQLite | source of truth for rooms/roles (Bun `bun:sqlite`) |
 
 Do not add Postgres, Redis/Valkey-as-room-state, LiveKit Egress, or OME File publisher.
@@ -160,7 +160,7 @@ Rule: [password-lockout-3-strikes-5-min](knowledge/rules/password-lockout-3-stri
 - Required indicators: speaking, transmitting (camera/screen), connection quality; adaptive when the transport allows. [presence-indicators-required](knowledge/rules/presence-indicators-required.md).
 - UI and docs in this repo: **zero emoji**. Tabler icons (`@tabler/icons-react`) are allowed. [no-emoji-in-ui-or-docs](knowledge/rules/no-emoji-in-ui-or-docs.md).
 - i18n: `en`, `pt-BR`, `es`. [i18n-en-pt-es](knowledge/rules/i18n-en-pt-es.md).
-- Theme: light/dark CSS tokens (`data-theme`). [design-tokens-light-dark](knowledge/rules/design-tokens-light-dark.md).
+- Theme: light/dark CSS tokens (`data-theme`). [design-tokens-light-dark](knowledge/rules/design-tokens-light-dark.md). Visual source: [figma-fundamentos-visual-source](knowledge/rules/figma-fundamentos-visual-source.md).
 - Domain types: `packages/shared`, do not duplicate in api/web. [shared-types-in-packages-shared](knowledge/rules/shared-types-in-packages-shared.md).
 - Public docs language: English. [public-docs-english](knowledge/rules/public-docs-english.md).
 - License: AGPL-3.0-only + ICLA. [agplv3-and-cla](knowledge/rules/agplv3-and-cla.md).
@@ -237,7 +237,7 @@ Prefer updating an existing file over adding a near-duplicate. A chat conclusion
 Amphitheatre publishes a single Docker image (`simstosh/amphitheatre`, API + built web app) to Docker Hub whenever a version tag is pushed. The flow is manual, not automatic on every merge:
 
 1. Run `scripts/extract-changelog.sh promote X.Y.Z` to move `CHANGELOG.md`'s `## [Unreleased]` content into a new `## [X.Y.Z] - YYYY-MM-DD` section (keeps an empty `## [Unreleased]` above it, and refreshes the `[X.Y.Z]` / `[Unreleased]` links at the bottom of the file).
-2. Bump `version` in the root `package.json` to match (Settings → About shows this semver).
+2. Bump `version` in the root `package.json` to match (Settings → About shows this semver), and bump the `AMPHITHEATRE_VERSION` default in `deploy/docker-compose*.yml` and `deploy/env.example`.
 3. Commit, then tag and push: `git tag vX.Y.Z && git push --tags`.
 4. `.github/workflows/release.yml` takes it from there: it extracts that version's section from `CHANGELOG.md` (`scripts/extract-changelog.sh`) to create the GitHub Release (English), and builds/pushes a multi-arch (`amd64`/`arm64`) image tagged `vX.Y.Z`, `X.Y`, and `latest`.
 
@@ -258,6 +258,8 @@ pnpm typecheck    # @coliseum/shared + @coliseum/api + @coliseum/web + @coliseum
 ```
 
 Load and stress: [docs/load-testing.md](docs/load-testing.md). The k6 script in `infra/loadtest/k6/api-rooms.js` still uses old paths (`POST /rooms`); the real contract is `/api/...` in `packages/shared` and [docs/api.md](docs/api.md). When touching load tests, align the script to the frozen contract — not the other way around.
+
+Web client: `bun test apps/web/src`, `pnpm --filter @coliseum/web lint` (also checks that every `components/ui` file has a story), `pnpm --filter @coliseum/web build`, and `pnpm --filter @coliseum/web build-storybook`. Visual rules live in `apps/web/DESIGN.md`.
 
 API tests cover: 3 failures -> 5 min lockout; roles; owner/admin persistence after leave/rejoin (including a “new process” on the same SQLite); OME down without taking the API down.
 

@@ -70,6 +70,12 @@ function mapQuality(quality: ConnectionQuality): ParticipantMedia["quality"] {
   }
 }
 
+function microphoneState(participant: Participant): ParticipantMedia["mic"] {
+  const publication = participant.getTrackPublication(Track.Source.Microphone);
+  if (!publication) return "none";
+  return publication.isMuted ? "muted" : "on";
+}
+
 function publicationFlags(participant: Participant) {
   let camera = false;
   let screen = false;
@@ -93,11 +99,19 @@ function applyParticipantVolume(
   volume: number,
   locallyMuted: boolean,
 ) {
+  const outOfVoice = useRoomStore.getState().voiceLeft;
   participant.audioTrackPublications.forEach((pub) => {
-    if (pub.audioTrack instanceof RemoteAudioTrack) {
-      pub.audioTrack.setVolume(locallyMuted ? 0 : volume);
-    }
+    if (!(pub.audioTrack instanceof RemoteAudioTrack)) return;
+    const streamAudio = pub.source === Track.Source.ScreenShareAudio;
+    const silent = locallyMuted || (outOfVoice && !streamAudio);
+    pub.audioTrack.setVolume(silent ? 0 : volume);
   });
+}
+
+function syncVoiceUsers(room: Room) {
+  const ids = [room.localParticipant.identity];
+  room.remoteParticipants.forEach((participant) => ids.push(participant.identity));
+  useRoomStore.getState().setVoiceUsers(ids.filter(Boolean));
 }
 
 async function applySavedDevices(room: Room) {
@@ -138,6 +152,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
   const roomRef = useRef<Room | null>(null);
   const [tiles, setTiles] = useState<StageTile[]>([]);
   const localMutedUserIds = useRoomStore((s) => s.localMutedUserIds);
+  const voiceLeft = useRoomStore((s) => s.voiceLeft);
 
   const refreshTiles = useCallback((room: Room) => {
     const next: StageTile[] = [];
@@ -169,6 +184,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
       audioLevel: participant.audioLevel,
       camera: flags.camera,
       screen: flags.screen,
+      mic: microphoneState(participant),
       quality: mapQuality(participant.connectionQuality),
     });
   }, []);
@@ -231,7 +247,9 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
         speaking: false,
         camera: false,
         screen: false,
+        mic: "none",
       });
+      syncVoiceUsers(room);
       refreshTiles(room);
     });
     room.on(RoomEvent.LocalTrackPublished, (_pub: LocalTrackPublication) => {
@@ -272,6 +290,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     });
     room.on(RoomEvent.Reconnected, () => {
       store.setLivekitStatus("connected");
+      syncVoiceUsers(room);
       toast.success(i18n.t("theater.reconnected"));
     });
     room.on(RoomEvent.Disconnected, () => {
@@ -291,7 +310,10 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
         },
       });
     });
-    room.on(RoomEvent.ParticipantConnected, (participant) => syncParticipant(participant));
+    room.on(RoomEvent.ParticipantConnected, (participant) => {
+      syncParticipant(participant);
+      syncVoiceUsers(room);
+    });
 
     const unlockOnGesture = () => {
       void unlockPlayback(room);
@@ -318,6 +340,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
         await applySavedDevices(room);
         syncParticipant(room.localParticipant);
         room.remoteParticipants.forEach(syncParticipant);
+        syncVoiceUsers(room);
         refreshTiles(room);
       } catch {
         if (!stopped) {
@@ -334,6 +357,8 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
       toast.dismiss(AUDIO_BLOCKED_TOAST);
       store.setLivekitStatus("idle");
       store.resetMedia();
+      store.setVoiceUsers([]);
+      store.setVoiceLeft(false);
       store.setLocalMediaFlags({ micEnabled: false, cameraEnabled: false, screenEnabled: false });
       detachAllRemoteAudio(room);
       void room.disconnect();
@@ -347,7 +372,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     if (!room) return;
     const prefs = readDevicePrefs();
     applyRemoteVolume(room, prefs.outputVolume, localMutedUserIds);
-  }, [localMutedUserIds]);
+  }, [localMutedUserIds, voiceLeft]);
 
   const setMic = async (enabledMic: boolean) => {
     const room = roomRef.current;
@@ -361,6 +386,17 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     } catch (err) {
       toast.error(i18n.t(mediaFailureToastKey(classifyGetUserMediaError(err))));
     }
+  };
+
+  const leaveVoice = async () => {
+    useRoomStore.getState().setVoiceLeft(true);
+    if (useRoomStore.getState().micEnabled) await setMic(false);
+  };
+
+  const joinVoice = () => {
+    useRoomStore.getState().setVoiceLeft(false);
+    const room = roomRef.current;
+    if (room) void unlockPlayback(room);
   };
 
   const setCamera = async (enabledCam: boolean) => {
@@ -430,5 +466,16 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     applyInputVolume(room, volume);
   };
 
-  return { tiles, setMic, setCamera, setScreen, listDevices, switchDevice, setOutputVolume, setInputVolume };
+  return {
+    tiles,
+    setMic,
+    setCamera,
+    setScreen,
+    leaveVoice,
+    joinVoice,
+    listDevices,
+    switchDevice,
+    setOutputVolume,
+    setInputVolume,
+  };
 }

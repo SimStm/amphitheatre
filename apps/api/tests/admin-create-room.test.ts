@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { AdminRoomRow } from "@coliseum/shared";
-import { PROVISIONED_OWNER_ID } from "../../src/ids";
+import { PROVISIONED_OWNER_ID } from "../src/ids";
 import {
   createGuest,
   createRoom,

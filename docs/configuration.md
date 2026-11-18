@@ -15,7 +15,7 @@ The API loads the monorepo root `.env` first, then `apps/api/.env` (`apps/api/sr
 | `LIVEKIT_API_KEY` / `LIVEKIT_API_SECRET` / `LIVEKIT_URL` | JWT mint + SDK |
 | `LIVEKIT_HTTP_URL` | RoomService / health (default: `LIVEKIT_URL` with `http`) |
 | `OME_API_URL` | OME REST (`http://localhost:8081`) |
-| `OME_API_ACCESS_TOKEN` | Basic auth; **must match** `infra/ome/origin_conf/Server.xml` |
+| `OME_API_ACCESS_TOKEN` | Basic auth for OME REST. The development Compose file passes it to OME |
 | `OME_RTMP_URL` | OBS ingest (alias: `OME_RTMP_INGEST_URL`) |
 | `OME_PLAYBACK_URL` | WebRTC playback (alias: `OME_WEBRTC_PLAYBACK_BASE`) |
 | `OME_LLHLS_PLAYBACK_BASE` | LL-HLS fallback |
@@ -25,7 +25,7 @@ The API loads the monorepo root `.env` first, then `apps/api/.env` (`apps/api/sr
 | `LIVEKIT_METRICS_URL` | LiveKit Prometheus text scrape (default `http://127.0.0.1:6789/metrics`; Compose `http://livekit:6789/metrics`) |
 | `METRICS_INTERVAL_MS` / `METRICS_RETENTION_DAYS` | Sampler period (15000) and SQLite sample retention (30 days) |
 
-LiveKit: `LIVEKIT_API_SECRET` must be at least 32 characters and must **not** contain `:`. Compose mounts `LIVEKIT_KEYS` as `"key: secret"`.
+LiveKit: `LIVEKIT_API_SECRET` must be at least 32 characters and must **not** contain `:`. Compose mounts `LIVEKIT_KEYS` as `"key: secret"` and, in development, also uses `LIVEKIT_API_KEY` as the LiveKit webhook key.
 
 ### Self-hosting with your own domain
 

@@ -21,7 +21,7 @@ networks:
 services:
   redis:
     # Valkey is RESP-compatible. LiveKit still connects as "redis:6379" (compose service name).
-    image: valkey/valkey:9.1.1-alpine
+    image: valkey/valkey:9.1.3-alpine
     container_name: coliseum-valkey
     restart: unless-stopped
     command: ["valkey-server", "/usr/local/etc/valkey/valkey.conf"]
@@ -41,17 +41,25 @@ services:
       start_period: 5s
 
   livekit:
-    image: livekit/livekit-server:v1.13.5
+    image: livekit/livekit-server:v1.13.11
     container_name: coliseum-livekit
     restart: unless-stopped
     init: true
     depends_on:
       redis:
         condition: service_healthy
-    command: ["--config", "/etc/livekit.yaml"]
+    # LiveKit exits if webhook.api_key is not one of LIVEKIT_KEYS and has no env
+    # var for that field, so the key from .env is written into the config here.
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        key=$$(printf '%s' "$$LIVEKIT_API_KEY" | sed 's/[|&\\]/\\&/g')
+        exec /livekit-server --config-body "$$(sed "s|^  api_key: .*|  api_key: $$key|" /etc/livekit.yaml)"
     environment:
       # Format required by livekit-server: "key: secret" (space after colon).
       LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -93,6 +101,7 @@ services:
     init: true
     environment:
       OME_HOST_IP: ${OME_HOST_IP:-127.0.0.1}
+      OME_API_ACCESS_TOKEN: ${OME_API_ACCESS_TOKEN:-coliseum-dev-ome-token-change-me}
       OME_RTMP_PROV_PORT: "1935"
       OME_ORIGIN_PORT: "9000"
       OME_LLHLS_STREAM_PORT: "3333"
@@ -129,7 +138,7 @@ services:
 
   # Optional TLS reverse proxy for signalling/HTTP. WebRTC UDP is NOT proxied.
   caddy:
-    image: caddy:2.11.4-alpine
+    image: caddy:2.11.9-alpine
     container_name: coliseum-caddy
     profiles: ["caddy"]
     restart: unless-stopped
@@ -151,7 +160,7 @@ services:
   # Optional external TURN if neither LiveKit embedded TURN nor OME TURN is enough.
   # Enable with --profile coturn after filling REALM / secret.
   # coturn:
-  #   image: coturn/coturn:4.17.2-alpine
+  #   image: coturn/coturn:4.19.1-alpine
   #   profiles: ["coturn"]
   #   network_mode: host
   #   command:

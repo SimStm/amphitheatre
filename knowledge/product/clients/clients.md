@@ -33,15 +33,15 @@ sources:
 
 SPA `@coliseum/web`: Vite 8, React 19, TanStack Router + Query, RHF+Zod, Zustand, i18next, livekit-client, OvenPlayer, hls.js, Tailwind 4, Sonner, Tabler Icons.[^web]
 
-Routes: `/` (create/join), `/rooms/$roomId` (theater), `/what-is`, `/about`. Unknown page and a **missing** room id: `NotFoundScreen` with the same InfiniteGrid3D as Home. An existing private/password room on `/rooms/$roomId` opens JoinGate, not 404.[^router]
+Routes: `/` (create/join), `/rooms/$roomId` (theater), `/what-is`, `/about`. An unknown page uses `NotFoundScreen`. A room URL always goes through the join flow: a missing room opens the invalid-invite dialog, and password, full-room, and name dialogs open over the home page.[^router]
 
 Vite proxy: `/api` -> `http://localhost:3001` with `ws: true`. Port **5173**. Preview 4173 with the same proxy.
 
-**Desktop:** `DesktopTheaterLayout` (stage + 340px aside Audience/Chat, faithful to `room.html`). Header right: Settings only; theme and locale are Settings → General. Devices is a two-column Discord-style voice grid on desktop. About shows the root `package.json` version. Author credit links to sims.dev.br; About CTAs are GitHub (outline) and Buy me a coffee (filled primary). **Mobile:** `MobileTheaterLayout` (stage fills leftover height, Audience/Chat as one glass-panel drawer above the dock, full-width bottom dock, Meet-style 1–2 camera grid). Header: wordmark + Settings (fullscreen sheet); title left, broadcast badge right. When Chat is not visible, unread count shows on the Chat tab and in the document title. Stage in auto-grid with pins on desktop. When broadcast is enabled but not playing, a full-width offline card sits outside the video tile. Member modal and settings modal.[^theater]
+**Desktop:** `DesktopTheaterLayout` is a full-screen stage with floating title, voice pill, invite, people, dock, and a chat or people panel. The left float lists people; with more than one stream it becomes a thumbnail rail. Each person chooses one stream or a resizing grid for their own stage. Floats can be hidden and hide when idle (Settings → General). **Mobile:** `MobileTheaterLayout` has the same full-screen stage, a thumbnail strip, a bottom dock with the microphone, and chat and people in a bottom sheet. Unread chat shows on the dock and in the document title. When broadcast is enabled but not playing, a card sits over the stage. Rules: [room-floating-interface](/rules/room-floating-interface.md), [stage-selection-per-viewer](/rules/stage-selection-per-viewer.md).[^theater]
 
 Theme `light` | `dark` on `data-theme` (persisted in `coliseum.ui` when the user switches). Locales `en` | `pt-BR` | `es`: first visit follows the browser; an explicit choice goes to `coliseum.locale`. Header with theme and language toggles.
 
-**Home:** visual layout follows `knowledge/references/prototypes/home.html` (64px hero, 480px dashboard). Background: `InfiniteGrid3D` (infinite 3D CSS grid, customizable). Gaming/Study/Dev cards are icon chips (~64px, tooltip, no visible text) — they do not create rooms. The HTML center pill (Discover/Library/Create) does **not** become a route; in React it loads theme and locale. Real actions: join or create a room via panel **tabs** (join first). Centered footer nav: What is Amphitheatre, About. `/what-is` is a readable document (no glass card, no competing product names). `/about` is centered like the missing-room screen: open-source copy (self-host and contribute), GitHub outline + coffee primary, and a grid of OvenMediaEngine, OvenPlayer, LiveKit, and Valkey. Settings → About stays the compact modal panel. On compact chrome the hero is centered, the hamburger opens a fullscreen appearance sheet, and the guest avatar sits inside that sheet. Compact Home also suggests installing as a PWA until the session is standalone; the hamburger has **Install as app**.
+**Home:** follows Figma frame `1.2`: greeting, create card (name, public or private, optional password), join card with the public room list, and footer links to What is Amphitheatre and About. `/what-is` is a readable document. `/about` is centered: open-source copy, GitHub outline + coffee primary, and a grid of OvenMediaEngine, OvenPlayer, LiveKit, and Valkey. Settings → About stays the compact panel. Compact Home suggests installing as a PWA until the session is standalone. Visual rules are in `apps/web/DESIGN.md`; base components are in Storybook (`pnpm --filter @coliseum/web storybook`).
 
 The stack is **not** Next.js / shadcn / DaisyUI. Do not force that stack in this repo. The **operator console** is a separate package `@coliseum/admin` (Mantine 9, port 5174 / `ADMIN_PORT`), not mixed into this theater SPA. See [Operator admin](/product/operator-admin/operator-admin.md).
 
@@ -57,7 +57,7 @@ The stack is **not** Next.js / shadcn / DaisyUI. Do not force that stack in this
 - [Vision](/product/vision/vision.md)
 - [No emoji](/rules/no-emoji-in-ui-or-docs.md)
 - [App name is Amphitheatre](/rules/app-name-amphitheatre.md)
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Home and join follow Figma](/rules/home-and-join-follow-figma.md)
 - [Site editorial pages](/rules/site-editorial-pages.md)
 - [PWA and native share](/rules/pwa-and-native-share.md)
 - [Web theater SPA](/changes/2026-08-22/web-theater-spa/web-theater-spa.md)

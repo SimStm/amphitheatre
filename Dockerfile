@@ -16,7 +16,7 @@
 # install/build; nothing here produces architecture-specific output, so
 # there is no correctness downside. Only the final `runtime` stage below
 # stays pinned to the real $TARGETPLATFORM.
-FROM --platform=$BUILDPLATFORM node:22-alpine AS deps
+FROM --platform=$BUILDPLATFORM node:24.22.3-alpine AS deps
 WORKDIR /repo
 RUN corepack enable && corepack prepare pnpm@11.22.0 --activate
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
@@ -34,7 +34,7 @@ RUN pnpm --filter @coliseum/admin build
 RUN pnpm --filter @coliseum/api deploy --prod --legacy /out/api
 
 # ---- runtime: Bun only, no Node/pnpm, no dev dependencies ----
-FROM oven/bun:1.2-alpine AS runtime
+FROM oven/bun:1.4.4-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 ENV ADMIN_BIND=0.0.0.0

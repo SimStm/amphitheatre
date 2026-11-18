@@ -8,7 +8,7 @@ generated: { by: coding_agent/composer, at: 2026-08-23T07:15:00Z }
 sources:
   - id: compose
     resource: docker-compose.yml
-    title: valkey/valkey:9.1.1-alpine
+    title: valkey/valkey:9.1.3-alpine
   - id: yaml
     resource: infra/livekit/livekit.yaml
     title: redis.address redis:6379 db 1
@@ -21,7 +21,7 @@ sources:
 
 The LiveKit RESP store is **Valkey** (`valkey/valkey`, semver-alpine pin), not `redis:` from Redis Ltd.
 
-- Image and container: `valkey/valkey:9.1.1-alpine`, `coliseum-valkey`, `valkey-server` + `valkey-cli`.
+- Image and container: `valkey/valkey:9.1.3-alpine`, `coliseum-valkey`, `valkey-server` + `valkey-cli`.
 - Compose hostname stays `redis` (`redis:6379` in the LiveKit YAML). Do not rename the service just so it “looks like Valkey” — LiveKit only speaks RESP.
 - Conf in `infra/redis/redis.conf`, mounted at `/usr/local/etc/valkey/valkey.conf`. `maxmemory-policy noeviction`. Volume `coliseum-valkey-data` (do not reuse a Redis Ltd. dump — RDB v12).
 - The API **does not** persist rooms/roles in that store (SQLite). Do not revert to Redis Ltd. for “compatibility”.

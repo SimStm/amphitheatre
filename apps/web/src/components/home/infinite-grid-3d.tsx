@@ -2,11 +2,9 @@ import type { CSSProperties } from "react";
 import { cn } from "../../lib/cn.ts";
 
 export type InfiniteGrid3DProps = {
-  /** Atalho: largura e altura iguais, em px. */
-  cellSize?: number;
-  /** Largura da celula no plano, em px. Sobrescreve `cellSize` no eixo X. */
+  /** Largura da celula no plano, em px. */
   cellWidth?: number;
-  /** Altura da celula no plano, em px. Sobrescreve `cellSize` no eixo Y (profundidade). */
+  /** Altura da celula no plano, em px (profundidade). */
   cellHeight?: number;
   /** Espessura da linha, em px. */
   lineWidth?: number;
@@ -32,30 +30,26 @@ export type InfiniteGrid3DProps = {
  * CSS-only: perspective + rotateX + padrao que avanca um cell por ciclo.
  */
 export function InfiniteGrid3D({
-  cellSize = 56,
-  cellWidth,
-  cellHeight,
-  lineWidth = 1,
+  cellWidth = 80,
+  cellHeight = 35,
+  lineWidth = 2,
   lineColor = "var(--accent)",
   fadeColor = "var(--home-page)",
   angle = 70,
-  perspective = 160,
+  perspective = 300,
   horizon = 40,
-  duration = 1.8,
+  duration = 1,
   opacity = 0.55,
   className,
 }: InfiniteGrid3DProps) {
-  const width = cellWidth ?? cellSize;
-  const height = cellHeight ?? cellSize;
-
   return (
     <div
       className={cn("infinite-grid-3d", className)}
       aria-hidden="true"
       style={
         {
-          "--ig-cell-w": `${width}px`,
-          "--ig-cell-h": `${height}px`,
+          "--ig-cell-w": `${cellWidth}px`,
+          "--ig-cell-h": `${cellHeight}px`,
           "--ig-line": `${lineWidth}px`,
           "--ig-color": lineColor,
           "--ig-fade": fadeColor,

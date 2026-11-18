@@ -31,7 +31,7 @@ About in the middle and dialog + panel scroll made for poor UX. Reload in the lo
 
 # Related
 
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
 - [AGPLv3 and CLA](/rules/agplv3-and-cla.md)
 - [No recording](/rules/no-recording.md)
 - [Valkey for LiveKit](/rules/valkey-for-livekit.md)

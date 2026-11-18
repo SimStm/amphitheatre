@@ -6,16 +6,10 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function TheaterSkeleton() {
   return (
-    <div className="flex min-h-dvh flex-col bg-surface-page p-4">
-      <Skeleton className="mb-4 h-12 w-full" />
-      <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <Skeleton className="min-h-64 w-full" />
-        <div className="hidden flex-col gap-3 lg:flex">
-          <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-64 w-full" />
-        </div>
-      </div>
-      <Skeleton className="mt-4 h-14 w-full" />
+    <div className="room-stage relative h-dvh overflow-hidden" aria-busy="true">
+      <Skeleton className="absolute left-4 top-4 h-[60px] w-[232px] rounded-[var(--radius-panel)]" />
+      <Skeleton className="absolute left-1/2 top-4 h-11 w-72 -translate-x-1/2 rounded-full" />
+      <Skeleton className="absolute bottom-6 left-1/2 h-16 w-[min(462px,calc(100%-2rem))] -translate-x-1/2 rounded-[var(--radius-panel)]" />
     </div>
   );
 }

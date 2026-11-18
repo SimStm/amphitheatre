@@ -42,4 +42,4 @@ There is no `depends_on` from LiveKit/Valkey to OME. `docker compose up` never s
 
 Do not add Postgres, Valkey/Redis as room state, LiveKit Egress, or OME File publisher.
 
-Pinned images: LiveKit `v1.13.5`, OvenMediaEngine `v0.21.0`, Valkey `9.1.1-alpine`. Details: [infra/README.md](../infra/README.md).
+Pinned images: LiveKit `v1.13.11`, OvenMediaEngine `v0.21.0`, Valkey `9.1.3-alpine`. Details: [infra/README.md](../infra/README.md).

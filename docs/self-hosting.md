@@ -109,7 +109,7 @@ docker run -d \
   -e ADMIN_BIND=0.0.0.0 \
   -e LIVEKIT_API_KEY=... -e LIVEKIT_API_SECRET=... -e LIVEKIT_URL=wss://your-livekit-host \
   -v amphitheatre-data:/app/data \
-  simstosh/amphitheatre:latest
+  simstosh/amphitheatre:2.0.0
 ```
 
 ## Ports reference
@@ -131,7 +131,7 @@ Ports marked "always" carry raw voice/video data and must stay open on your fire
 
 ## Updating to a new version
 
-New versions are published to Docker Hub as `simstosh/amphitheatre:<version>` (and `:latest`). See [Releases](https://github.com/simstm/amphitheatre/releases) for what changed in each one.
+New versions are published to Docker Hub as `simstosh/amphitheatre:<version>`. See [Releases](https://github.com/simstm/amphitheatre/releases) for what changed in each one. The Compose files run the version in `AMPHITHEATRE_VERSION`, so an update never happens by surprise. Set it in your `.env`, then pull and restart:
 
 ```bash
 docker compose pull app
@@ -154,4 +154,4 @@ cd amphitheatre
 docker build -t amphitheatre .
 ```
 
-Then point `deploy/docker-compose.yml`'s `app.image` at your own tag instead of `simstosh/amphitheatre:latest`.
+Then point `deploy/docker-compose.yml`'s `app.image` at your own tag instead of `simstosh/amphitheatre:${AMPHITHEATRE_VERSION:-<version>}`.

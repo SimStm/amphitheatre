@@ -34,8 +34,8 @@ The room header was crowded with theme and locale next to Settings. Chat had no 
 
 # Related
 
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
 - [Mobile first-class separate layout](/rules/mobile-first-class-separate-layout.md)
-- [Stage pin grid](/rules/stage-pin-grid.md)
+- [Stage pin grid](/rules/stage-selection-per-viewer.md)
 - [Realtime chat](/product/realtime-chat/realtime-chat.md)
 - [Clients](/product/clients/clients.md)

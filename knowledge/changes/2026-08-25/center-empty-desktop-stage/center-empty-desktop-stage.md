@@ -22,5 +22,5 @@ When there is no camera, screenshare, or live broadcast, the empty stage (“the
 
 # Related
 
-- [Room follows HTML prototype](/rules/room-follows-html-prototype.md)
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Room follows HTML prototype](/rules/room-floating-interface.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)

@@ -28,7 +28,7 @@ networks:
 
 services:
 #  traefik:
-#    image: traefik:v3.5
+#    image: traefik:v3.7.19
 #    container_name: amphitheatre-traefik
 #    restart: unless-stopped
 #    command:
@@ -49,7 +49,7 @@ services:
 #    networks: [amphitheatre]
 
   app:
-    image: simstosh/amphitheatre:latest
+    image: simstosh/amphitheatre:${AMPHITHEATRE_VERSION:-2.0.0}
     container_name: amphitheatre-app
     restart: unless-stopped
     depends_on:
@@ -96,7 +96,7 @@ services:
       - traefik.http.routers.amphitheatre-admin.middlewares=ip-whitelist@file
 
   redis:
-    image: valkey/valkey:9.1.1-alpine
+    image: valkey/valkey:9.1.3-alpine
     container_name: amphitheatre-valkey
     restart: unless-stopped
     command: ["valkey-server", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction", "--save", "60", "1"]
@@ -111,7 +111,7 @@ services:
       start_period: 5s
 
   livekit:
-    image: livekit/livekit-server:v1.13.5
+    image: livekit/livekit-server:v1.13.11
     container_name: amphitheatre-livekit
     restart: unless-stopped
     init: true

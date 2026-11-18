@@ -12,6 +12,7 @@ export type {
   Room,
   RoomBroadcast,
   RoomMember,
+  SessionResponse,
   SessionUser,
   StreamProvider,
 } from "@coliseum/shared";
@@ -23,6 +24,7 @@ export type ParticipantMedia = {
   audioLevel: number;
   camera: boolean;
   screen: boolean;
+  mic: "on" | "muted" | "none";
   quality: ConnectionQuality | "unknown";
   adaptive: boolean;
 };

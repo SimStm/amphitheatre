@@ -12,16 +12,16 @@ import type { Locale, ThemeMode } from "../shared-types.ts";
 type UiState = {
   theme: ThemeMode;
   locale: Locale;
-  mobileTab: "chat" | "people";
+  autoHideSeconds: number;
   setTheme: (theme: ThemeMode) => void;
   setLocale: (locale: Locale) => void;
-  setMobileTab: (tab: "chat" | "people") => void;
+  setAutoHideSeconds: (seconds: number) => void;
 };
 
 function applyTheme(theme: ThemeMode) {
   document.documentElement.dataset.theme = theme;
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", theme === "dark" ? "#1b110a" : "#f6ebe3");
+  if (meta) meta.setAttribute("content", theme === "dark" ? "#0e0a07" : "#f6ebe3");
 }
 
 function migrateLegacyLocale() {
@@ -36,7 +36,7 @@ export const useUiStore = create<UiState>()(
     (set) => ({
       theme: "dark",
       locale: resolveLocale(),
-      mobileTab: "chat",
+      autoHideSeconds: 5,
       setTheme: (theme) => {
         applyTheme(theme);
         set({ theme });
@@ -46,11 +46,11 @@ export const useUiStore = create<UiState>()(
         void i18n.changeLanguage(locale);
         set({ locale });
       },
-      setMobileTab: (mobileTab) => set({ mobileTab }),
+      setAutoHideSeconds: (autoHideSeconds) => set({ autoHideSeconds }),
     }),
     {
       name: "coliseum.ui",
-      partialize: (state) => ({ theme: state.theme }),
+      partialize: (state) => ({ theme: state.theme, autoHideSeconds: state.autoHideSeconds }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
         applyTheme(state.theme);

@@ -1,181 +1,155 @@
----
-name: Titan Cockpit
-colors:
-  surface: '#1b110a'
-  surface-dim: '#1b110a'
-  surface-bright: '#43372e'
-  surface-container-lowest: '#150c06'
-  surface-container-low: '#241911'
-  surface-container: '#281d15'
-  surface-container-high: '#33281f'
-  surface-container-highest: '#3f3229'
-  on-surface: '#f3dfd1'
-  on-surface-variant: '#ddc1ae'
-  inverse-surface: '#f3dfd1'
-  inverse-on-surface: '#3a2e25'
-  outline: '#a48c7a'
-  outline-variant: '#564334'
-  surface-tint: '#ffb77c'
-  primary: '#ffb77c'
-  on-primary: '#4d2700'
-  primary-container: '#ff8e04'
-  on-primary-container: '#623300'
-  inverse-primary: '#904d00'
-  secondary: '#fcb882'
-  on-secondary: '#4d2700'
-  secondary-container: '#6c3e11'
-  on-secondary-container: '#ecab75'
-  tertiary: '#86cfff'
-  on-tertiary: '#00344c'
-  tertiary-container: '#00b6fe'
-  on-tertiary-container: '#004462'
-  error: '#ffb4ab'
-  on-error: '#690005'
-  error-container: '#93000a'
-  on-error-container: '#ffdad6'
-  primary-fixed: '#ffdcc2'
-  primary-fixed-dim: '#ffb77c'
-  on-primary-fixed: '#2e1500'
-  on-primary-fixed-variant: '#6d3900'
-  secondary-fixed: '#ffdcc2'
-  secondary-fixed-dim: '#fcb882'
-  on-secondary-fixed: '#2e1500'
-  on-secondary-fixed-variant: '#693c0f'
-  tertiary-fixed: '#c7e7ff'
-  tertiary-fixed-dim: '#86cfff'
-  on-tertiary-fixed: '#001e2e'
-  on-tertiary-fixed-variant: '#004c6d'
-  background: '#1b110a'
-  on-background: '#f3dfd1'
-  surface-variant: '#3f3229'
-typography:
-  display-lg:
-    fontFamily: Hanken Grotesk
-    fontSize: 48px
-    fontWeight: '800'
-    lineHeight: 56px
-    letterSpacing: -0.02em
-  headline-lg:
-    fontFamily: Hanken Grotesk
-    fontSize: 32px
-    fontWeight: '700'
-    lineHeight: 40px
-  headline-lg-mobile:
-    fontFamily: Hanken Grotesk
-    fontSize: 24px
-    fontWeight: '700'
-    lineHeight: 32px
-  title-md:
-    fontFamily: Hanken Grotesk
-    fontSize: 18px
-    fontWeight: '600'
-    lineHeight: 24px
-  body-lg:
-    fontFamily: Raleway
-    fontSize: 16px
-    fontWeight: '400'
-    lineHeight: 24px
-  body-sm:
-    fontFamily: Raleway
-    fontSize: 14px
-    fontWeight: '400'
-    lineHeight: 20px
-  label-caps:
-    fontFamily: Quicksand
-    fontSize: 12px
-    fontWeight: '600'
-    lineHeight: 16px
-    letterSpacing: 0.08em
-  code-snippet:
-    fontFamily: Quicksand
-    fontSize: 13px
-    fontWeight: '400'
-    lineHeight: 20px
-rounded:
-  sm: 0.25rem
-  DEFAULT: 0.5rem
-  md: 0.75rem
-  lg: 1rem
-  xl: 1.5rem
-  full: 9999px
-spacing:
-  unit: 4px
-  sidebar-width: 280px
-  activity-bar-width: 72px
-  gutter: 16px
-  container-padding: 24px
-  stack-gap: 8px
----
+# Amphitheatre design system
 
-## Brand & Style
+The web app follows the Figma file **Amphitheatre Hub**: page `01 · Fundamentos` defines colors, type, indicators and icons, and page `05 · Fluxo 1 · Salas avulsas` defines the screens (`1.2`, `1.4`, `1.5`, `1.6`, and the room built from `1.3e` and `1.3d`).
 
-The design system is engineered for high-performance communication, blending the aesthetics of a high-end streaming cockpit with the precision of developer tools. It targets "pro-gamers" and tech-enthusiasts who value focus, immersion, and speed. 
+When this file and the Figma file disagree, the Figma file wins and this file gets updated. Tokens live in `src/index.css`. Base components live in `src/components/ui/`, and each one has a Storybook story.
 
-The visual style is **Corporate / Modern** mixed with **Glassmorphism**. It utilizes deep, earthy foundations to reduce eye strain during long sessions, contrasted by vibrant "Neon Pulse" and "Amber Ember" accents that signal interactable elements and active states. The mood is authoritative and premium—moving away from the "toy-like" playfulness of casual apps toward a tool that feels like a professional hardware interface with a sophisticated, warm-toned tech aesthetic.
+## Character
 
-## Colors
+A dark, warm room with the lights down. The content on stage is the brightest thing on screen, and the interface sits around it and gets out of the way. Surfaces are near-black browns, never neutral gray. Orange is the one accent: it marks the main action and whatever is on stage.
 
-The palette is anchored in a "Tactical Warmth" philosophy, moving away from pure blacks toward rich, organic dark tones.
-- **Base Surfaces:** Use `#847469` (Muted Umber) as the neutral foundation for surfaces, providing a softer but still high-contrast dark mode experience.
-- **Containers:** Use `#a26b3b` (Burnished Bronze) for sidebars and secondary containers to create a rugged, metallic structural differentiation.
-- **Accents:** `#ff8e04` (Amber Ember) is reserved strictly for primary actions, notifications, and active navigation states. `#00b6fe` (Neon Pulse) provides high-visibility tertiary highlights.
-- **Overlays:** Use semi-transparent variants of the neutral palette with a `blur(12px)` backdrop to maintain the glassmorphism feel without sacrificing legibility.
+Avoid what makes a page look generated: monospaced text, uppercase labels, purple gradients, glass cards, glowing borders, and identical fade-up on every element.
 
-## Typography
+## Color
 
-This design system uses a triple-font hierarchy to establish a "tech-forward" persona:
-1. **Hanken Grotesk (Headlines):** High-impact, sharp, and modern. Used for page titles and significant headings.
-2. **Raleway (UI & Body):** An elegant, geometric sans-serif that provides a unique character to chat messages and general UI controls. It ensures maximum readability with a distinct stylistic edge.
-3. **Quicksand (Technical Labels):** An approachable yet clean font used for metadata, timestamps, and "system" labels (e.g., "OWNER", "MODERATOR") to reinforce the streaming cockpit aesthetic.
+Use the Tailwind names below. Never write a hex value in a component. Dark values are from Fundamentos; the light theme keeps the same names.
 
-All labels should use uppercase with slight tracking (`letter-spacing`) to differentiate them from standard body text.
+### Surfaces
 
-## Layout & Spacing
+| Token | Dark | Use |
+|---|---|---|
+| `surface-window` | `#0b0907` | Behind everything |
+| `surface-page` | `#0e0a07` | Page background |
+| `surface-sunken` | `#120d09` | Inputs, side areas |
+| `surface-raised` | `#17110c` | Cards and dialogs |
+| `surface-row` | `#1b140e` | Rows inside a card |
+| `surface-bright` | `#211912` | Raised controls |
+| `surface-selected` | `#241a12` | Selected item |
+| `surface-float` | page at 78% | Floating panels over video |
+| `surface-float-strong` | page at 94% | Floating panels that hold text |
 
-The layout follows a **Fluid Grid** model with high-density spacing. It mimics a dashboard environment where screen real estate is optimized for information.
+### Text
 
-- **Desktop:** A three-pane architecture. A narrow 72px "Activity Bar" for server/app icons, a 280px "Navigation Sidebar" for channels/lists, and a fluid "Main Content" area.
-- **Tablet:** The navigation sidebar becomes a collapsible drawer.
-- **Mobile:** Single-column view focusing on the chat/stage, with navigation accessible via a bottom tab bar or hamburger menu.
+| Token | Dark | Use |
+|---|---|---|
+| `ink` | `#f3dfd1` | Titles and main text |
+| `ink-soft` | `#e6d2c3` | Names, unselected options |
+| `ink-muted` | `#c4b09e` | Secondary text, labels |
+| `ink-dim` | `#a8968a` | Descriptions |
+| `ink-subtle` | `#8c7a6b` | Hints and footers |
+| `ink-faint` | `#6e5e52` | Placeholders |
+| `ink-off` | `#5e4f44` | Disabled |
+| `ink-on-accent` | `#2e1500` | Text on orange |
 
-Spacing uses a 4px baseline. Components within the chat stream should feel tight (8px gaps), while main structural elements use 24px margins to provide visual breathing room.
+`ink-soft`, `ink-dim` and `ink-faint` appear in the screens but are not named in Fundamentos.
 
-## Elevation & Depth
+### One color, one meaning
 
-Hierarchy is established through **Tonal Layering** and **Glassmorphism** rather than traditional shadows.
-- **Level 0 (Background):** The deepest neutral layer based on the muted foundation.
-- **Level 1 (Sidebar/Containers):** `#a26b3b` (Bronze). Raised slightly above the background.
-- **Level 2 (Cards/Inputs):** Standard interactable surfaces using subtle tonal shifts.
-- **Level 3 (Popovers/Modals):** Semi-transparent surfaces with a `20px` background blur and a `1px` subtle border in a light highlight. 
+| Token | Value | Only means |
+|---|---|---|
+| `accent` / `accent-text` | `#ff8e04` / `#ffb77c` | Main action, on stage, own avatar, unread |
+| `speaking` on `speaking-soft` | `#7dba90` on `#13241a` | Speaking, good connection |
+| `danger` / `danger-text` | `#e5484d` / `#ff8a80` | Live, leave, muted, errors |
+| `selfhost` on `selfhost-soft` | `#7dd3ff` on `#10242e` | Self-hosted |
+| `attention` / `attention-text` | `#e5a23b` / `#f2c27a` | Weak connection, basic mode |
+| `role-admin` on `role-admin-soft` | `#c8b4ff` | Room admin |
+| `role-moderator` on `role-moderator-soft` | `#f4a6d0` | Room moderator |
 
-Shadows, when used (e.g., on primary buttons), should be tight and high-intensity, using the primary amber color at low opacity to create a "glow" effect rather than a traditional drop shadow.
+The room owner uses `role-owner`, the soft accent `#ffb77c`, always with the crown.
 
-## Shapes
+Do not use green for a confirmation button or red for decoration.
 
-The shape language balances modern softness with structural rigidity. 
-- **Standard UI (Buttons, Inputs, Cards):** Use `0.5rem` (8px) for a professional, "tooled" look.
-- **Large Containers (Modals, Panels):** Use `1rem` (16px) to define major sections of the UI.
-- **Avatar/Icons:** Use `0.75rem` (12px) or full circles for status indicators.
+## Logo
 
-Avoid sharp corners to keep the interface feeling premium, but avoid pill-shapes except for specific "Status" chips.
+The original logo is the main mark of the product and appears on every screen. Use `BrandWordmark` and `BrandMark`, which load the files in `src/assets`. Do not redraw it, and do not use a logo from a Figma frame. In tight spaces, use the symbol alone.
+
+## Type
+
+| Role | Font | Weight | Sizes |
+|---|---|---|---|
+| Titles, names, rooms, buttons | Hanken Grotesk (`font-display`) | 700 | 34, 22, 19, 15, 14.5, 12 |
+| Running text | Raleway (`font-sans`) | 400 | 16, 15, 14.5, 13.5, 13, 12.5 |
+
+No monospaced type anywhere the user can see, and no CSS uppercase. Room codes are case-sensitive, so uppercase styling would show the wrong code.
+
+## Shape and elevation
+
+| Token | Size | Use |
+|---|---|---|
+| `--radius-tile` | 12 px | Stream cards, rows, icon tiles |
+| `--radius-control` | 14 px | Inputs, buttons, option cards |
+| `--radius-panel` | 20 px | Cards, dialogs, floating panels |
+| `--radius-pill` | full | Chips and badges |
+
+Elevation comes from a lighter surface and a 1 px border. Floating panels get `--shadow-float`. Do not add backdrop blur over video: it costs a lot of GPU on top of a live decode.
+
+## Indicators
+
+These come from Fundamentos and keep the same meaning everywhere.
+
+| State | Shown as |
+|---|---|
+| Speaking | Green ring (`speaking-ring`) |
+| In voice, silent | Avatar without ring |
+| Muted | Crossed microphone in red |
+| Listening only | Headphones |
+| Camera | Camera icon by the name |
+| Screen | Monitor icon by the name |
+| Room live | Antenna or red dot with "Live" |
+| Self-hosted | Cyan badge with a server icon |
+| Signal | Three green bars, two green bars, one amber bar |
+| Roles | Owner: crown, orange. Admin: shield with check, violet. Moderator: gavel, orchid. Members have no mark |
+
+Every indicator has text for screen readers. Color is never the only signal.
+
+## Icons
+
+Tabler icons only (`@tabler/icons-react`), stroke 1.75 to 1.9. No emoji in the UI or the docs.
 
 ## Components
 
-### Buttons
-- **Primary:** Background `#ff8e04`, text high-contrast, bold weight. On hover, apply a slight outer glow.
-- **Secondary:** Transparent background with a `1px` border of `#ff8e04`. Text matches border color.
-- **Ghost:** No background or border. Text is neutral, turning amber on hover.
+| Component | Purpose |
+|---|---|
+| `Button` | Actions. Variants `primary`, `secondary`, `ghost`, `danger` |
+| `IconButton` | Square or round icon action with a required label and tooltip |
+| `Tooltip` | Short label on hover and focus |
+| `Dialog`, `DialogFrame` | Modal with title and footer, or a free layout |
+| `Popover` | Speech bubble beside an anchor, with an arrow, in the top layer |
+| `RoleBadge`, `RoleMark`, `RoleIcon` | Room role as a pill, an avatar mark, or an inline icon |
+| `FloatSurface` | Panel floating over the stage |
+| `Avatar`, `AvatarStack` | Person, with speaking and self states |
+| `SignalBars`, `StatusDot` | Connection and status |
+| `IconTile` | Icon in a tinted square |
+| `RadioCard` | Option with title and description |
+| `OptionGroup` | Short choices in a row, such as theme or time |
+| `Card`, `CardBody` | Titled card on the home and site pages |
+| `Field`, `Label`, `Input`, `Textarea`, `PasswordInput`, `Select` | Forms |
+| `Badge`, `Alert`, `Skeleton` | Status, messages, loading |
 
-### Input Fields
-- **Default:** Background derived from the secondary bronze palette, border `1px solid` matching the outline-variant. 
-- **Active:** Border changes to `#ff8e04` or `#00b6fe` with a subtle inner glow. Labels use `Quicksand` at 12px.
+### Storybook
 
-### Chips & Badges
-- **Role Badges:** Small rectangular boxes with a `1px` solid border colored by role (e.g., amber for Owner, bronze for Moderator). Text in `Quicksand` all-caps.
+Run `pnpm --filter @coliseum/web storybook`. Every `.tsx` file directly in `src/components/ui/` needs a matching `.stories.tsx`. `pnpm --filter @coliseum/web lint` fails when one is missing.
 
-### Cards & Chat Messages
-- **Messages:** No border or background by default. On hover, the entire message block receives a subtle highlight background to indicate focus.
-- **Cards:** Used for user profiles or stream previews. Utilize Level 2 elevation with a `1px` top-border highlight.
+## Motion
 
-### Sidebars
-- Use a `1px` vertical divider to separate the activity bar from the channel list. Active channels are indicated by a vertical amber bar (4px wide) on the left edge.
+Use Motion from `motion/react`. `MotionConfig reducedMotion="user"` wraps the app, so movement turns into short fades for people who ask for less.
+
+Each animation shows a change of state, a relationship, or feedback. Prefer `transform`, `opacity`, `clip-path` and `filter`.
+
+| Moment | Treatment |
+|---|---|
+| Floating panels hide or return | Each slides toward its own screen edge |
+| Left panel changes between people and streams | Width and content morph with `layout` |
+| Stage grid changes | Tiles move to their new place with `layout` |
+| Dialogs | Scrim fades, panel rises with a soft spring, and both leave in 160 ms |
+| Popovers | Grow from the arrow with a short spring |
+| Home and site pages | The checkered floor moves toward the viewer; headline and cards rise in sequence out of a light blur |
+| Empty stage | Amphitheatre rows draw themselves in |
+
+Default spring: `{ type: "spring", bounce: 0.2, visualDuration: 0.4 }`. Small controls take 150 to 300 ms, large surfaces up to about 500 ms.
+
+## Layout
+
+The home page, `/about`, and `/what-is` share `SiteShell`: the moving floor, `SiteHeader`, and a floating footer. Text that needs reading sits on a card or floating surface, not directly on the floor.
+
+The room is one full-screen stage with panels floating over it. Top and bottom scrims keep panels readable over bright video. Mobile has its own layout (coarse pointer or width up to 767 px), with touch targets of at least 44 px.

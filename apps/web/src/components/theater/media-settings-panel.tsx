@@ -6,6 +6,7 @@ import type { MediaDeviceKindName } from "../../hooks/use-livekit.ts";
 import { readDevicePrefs, writeDevicePrefs } from "../../lib/device-prefs.ts";
 import { classifyGetUserMediaError, mediaFailureToastKey } from "../../lib/media-permissions.ts";
 import { Field } from "../ui/field.tsx";
+import { Select } from "../ui/select.tsx";
 
 type DeviceLists = {
   audioinput: MediaDeviceInfo[];
@@ -41,24 +42,14 @@ function DeviceSelect({
 }) {
   return (
     <Field id={id} label={label}>
-      <div className="relative">
-        <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-muted" aria-hidden="true">
-          {icon}
-        </span>
-        <select
-          id={id}
-          className="input-glow h-11 w-full rounded-[var(--radius-control)] border border-border bg-surface-sunken pr-3 pl-10 text-sm text-ink"
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-        >
-          {options.length === 0 ? <option value="">{label}</option> : null}
-          {options.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label || device.deviceId}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Select id={id} leading={icon} value={value} onChange={(event) => onChange(event.target.value)}>
+        {options.length === 0 ? <option value="">{label}</option> : null}
+        {options.map((device) => (
+          <option key={device.deviceId} value={device.deviceId}>
+            {device.label || device.deviceId}
+          </option>
+        ))}
+      </Select>
     </Field>
   );
 }

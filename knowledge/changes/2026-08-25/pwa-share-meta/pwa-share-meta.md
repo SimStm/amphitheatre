@@ -34,5 +34,5 @@ Users asked for native share on Invite, a first-class PWA with a brown icon back
 
 - [PWA and native share](/rules/pwa-and-native-share.md)
 - [Clients](/product/clients/clients.md)
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Home follows HTML prototype](/rules/home-and-join-follow-figma.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)

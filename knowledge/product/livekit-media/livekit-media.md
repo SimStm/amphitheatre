@@ -32,7 +32,7 @@ sources:
 - Devices modal: on desktop, microphone and speaker sit in two columns (select above volume); mic test and the level meter span both columns. Starting the test mutes the published room mic (if it was on), plays a local self-listen loopback, and shows a visible level meter; stopping restores the previous mute state unless a moderator mute is in effect. Camera preview starts only after a tap. Settings → General can request mic and camera on tap so Safari shows a prompt. Dock capture must not await `startAudio()` before `getUserMedia`.
 - Screen share requests tab/system audio (`audio` + Chromium `systemAudio: "include"`). Local screen audio is not played back. If the browser rejects the audio constraint, share continues as video-only.
 - `room.startAudio()` after connect and on user gestures; toast when autoplay still blocks. Speaking indicators are not treated as proof of audible output.
-- SFU: image `livekit/livekit-server:v1.13.5`, UDP mux `7882`, ICE TCP `7881`, Valkey DB 1 (RESP), `max_participants: 50`, no egress.[^yaml]
+- SFU: image `livekit/livekit-server:v1.13.11`, UDP mux `7882`, ICE TCP `7881`, Valkey DB 1 (RESP), `max_participants: 50`, no egress.[^yaml]
 - Webhook `POST /webhooks/livekit` updates camera/screen in the hub.
 - Client emits `presence.update` (speaking, camera, screen, quality).
 

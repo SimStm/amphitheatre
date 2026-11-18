@@ -1,41 +1,34 @@
-import { useBlocker, useNavigate } from "@tanstack/react-router";
+import { emptyBroadcast } from "@coliseum/shared";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useBlocker, useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import {
-  ApiError,
-  createSession,
-  getMedia,
-  getRoom,
-  getSession,
-  isLockoutError,
-  isNotFoundError,
-  joinRoom,
-  leaveRoom,
-} from "../../lib/api.ts";
-import { joinErrorMessageKey } from "../../lib/join-errors.ts";
-import { NotFoundScreen } from "../not-found-screen.tsx";
-import { LeaveRoomDialog } from "./leave-room-dialog.tsx";
-import { emptyBroadcast } from "@coliseum/shared";
-import { canManageBroadcast, canSeeIngest } from "../../lib/permissions.ts";
-import { useDelayedFlag, useTheaterLayout } from "../../hooks/use-media.ts";
+import { useInvite } from "../../hooks/use-invite.ts";
+import { useJoinFlow } from "../../hooks/use-join-flow.ts";
 import { useLivekitRoom } from "../../hooks/use-livekit.ts";
+import { useDelayedFlag, useTheaterLayout } from "../../hooks/use-media.ts";
 import { useRoomSocket } from "../../hooks/use-room-socket.ts";
+import { useStageStreams } from "../../hooks/use-stage-streams.ts";
 import { useUnreadChat } from "../../hooks/use-unread-chat.ts";
-import type { SideTab } from "./theater-side-panel.tsx";
+import { getMedia, getRoom, getSession, leaveRoom } from "../../lib/api.ts";
+import { canManageBroadcast, canSeeIngest } from "../../lib/permissions.ts";
+import { buildPeople } from "../../lib/room-people.ts";
+import { resolveSelection } from "../../lib/stage-selection.ts";
+import type { JoinResponse } from "../../shared-types.ts";
 import { useRoomStore } from "../../stores/room-store.ts";
 import { useSessionStore } from "../../stores/session-store.ts";
+import { useStageStore } from "../../stores/stage-store.ts";
+import { HomeLayout } from "../home/home-screen.tsx";
+import { JoinDialogs } from "../join/join-dialogs.tsx";
+import { RoomViewProvider, type RoomPanelKind, type RoomView } from "../room/room-view.tsx";
 import { TheaterSkeleton } from "../ui/skeleton.tsx";
+import { hasBroadcastPlayback } from "./broadcast-pane.tsx";
 import { ChatPanel } from "./chat-panel.tsx";
-import { ControlBar } from "./control-bar.tsx";
 import { DesktopTheaterLayout } from "./desktop-theater-layout.tsx";
-import { JoinGate } from "./join-gate.tsx";
-import { MemberList } from "./member-list.tsx";
+import { LeaveRoomDialog } from "./leave-room-dialog.tsx";
 import { MobileTheaterLayout } from "./mobile-theater-layout.tsx";
-import { BroadcastStatus } from "./broadcast-status.tsx";
 import { RoomSettingsModal } from "./room-settings-modal.tsx";
-import { Stage } from "./stage.tsx";
 
 export function TheaterScreen({ roomId }: { roomId: string }) {
   const { t } = useTranslation();
@@ -47,31 +40,34 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
   const messages = useRoomStore((s) => s.messages);
   const ome = useRoomStore((s) => s.ome);
   const mediaByUserId = useRoomStore((s) => s.mediaByUserId);
+  const voiceUserIds = useRoomStore((s) => s.voiceUserIds);
+  const voiceLeft = useRoomStore((s) => s.voiceLeft);
+  const localMutedUserIds = useRoomStore((s) => s.localMutedUserIds);
   const livekitStatus = useRoomStore((s) => s.livekitStatus);
   const micEnabled = useRoomStore((s) => s.micEnabled);
   const cameraEnabled = useRoomStore((s) => s.cameraEnabled);
   const screenEnabled = useRoomStore((s) => s.screenEnabled);
-  const lockoutUntil = useRoomStore((s) => s.lockoutUntil);
   const chatMutedUntil = useRoomStore((s) => s.chatMutedUntil);
   const setRoom = useRoomStore((s) => s.setRoom);
   const setOme = useRoomStore((s) => s.setOme);
   const setBroadcast = useRoomStore((s) => s.setBroadcast);
   const setLivekitCreds = useRoomStore((s) => s.setLivekitCreds);
-  const setLockout = useRoomStore((s) => s.setLockout);
   const reset = useRoomStore((s) => s.reset);
+  const stageChoice = useStageStore((s) => s.choice);
+  const clearStage = useStageStore((s) => s.clear);
 
-  const [gate, setGate] = useState(false);
-  const [gateError, setGateError] = useState<string | undefined>();
   const [joined, setJoined] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
-  const [sideTab, setSideTab] = useState<SideTab>("chat");
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [panel, setPanel] = useState<RoomPanelKind | null>(null);
   const allowNavRef = useRef(false);
+  const startedRef = useRef<string | null>(null);
 
   useEffect(() => {
     allowNavRef.current = false;
-  }, [roomId]);
+    clearStage();
+    return clearStage;
+  }, [clearStage, roomId]);
 
   const sessionQuery = useQuery({
     queryKey: ["session"],
@@ -93,12 +89,10 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
     if (roomQuery.data) setRoom(roomQuery.data);
   }, [roomQuery.data, setRoom]);
 
-  const chatVisible =
-    layout === "mobile" ? mobileDrawerOpen && sideTab === "chat" : sideTab === "chat";
   const unreadChat = useUnreadChat({
     messages,
     selfId: user?.userId,
-    chatVisible,
+    chatVisible: panel === "chat",
     enabled: joined,
   });
 
@@ -112,55 +106,37 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
   }, [room?.name, unreadChat]);
 
   const applyJoin = useCallback(
-    (result: Awaited<ReturnType<typeof joinRoom>>) => {
+    (result: JoinResponse) => {
       setRoom(result.room);
       if (result.ome) setOme(result.ome);
       if (result.livekitToken && result.livekitUrl) {
         setLivekitCreds({ token: result.livekitToken, url: result.livekitUrl });
       }
       setJoined(true);
-      setGate(false);
-      setGateError(undefined);
     },
     [setLivekitCreds, setOme, setRoom],
   );
 
+  const flow = useJoinFlow({
+    onJoined: (result, { interactive }) => {
+      applyJoin(result);
+      if (interactive) toast.success(t("toast.joined"));
+    },
+  });
+  const { begin } = flow;
+
   useEffect(() => {
-    if (!roomQuery.isFetched) return;
-    if (roomQuery.isError) return;
+    if (!sessionQuery.isFetched || !roomQuery.isFetched) return;
+    if (joined || startedRef.current === roomId) return;
+    startedRef.current = roomId;
     const current = useSessionStore.getState().user;
-    const fetched = roomQuery.data;
-    if (!current) {
-      setGate(true);
-      return;
-    }
+    const fetched = roomQuery.data ?? null;
     const alreadyIn = fetched?.members?.some(
-      (member) => member.userId === current.userId && member.present,
+      (member) => member.userId === current?.userId && member.present,
     );
-    if (alreadyIn) {
-      setJoined(true);
-      setGate(false);
-      return;
-    }
-    if (fetched && !fetched.hasPassword) {
-      void (async () => {
-        try {
-          const result = await joinRoom(roomId);
-          applyJoin(result);
-        } catch (error) {
-          if (isLockoutError(error)) {
-            setLockout(Date.now() + (error.remainingMs ?? 300000));
-          }
-          if (error instanceof ApiError) {
-            setGateError(t(joinErrorMessageKey(error)));
-          }
-          setGate(true);
-        }
-      })();
-      return;
-    }
-    setGate(true);
-  }, [applyJoin, roomQuery.isFetched, roomQuery.data, roomQuery.isError, roomId, setLockout, t]);
+    if (alreadyIn) setJoined(true);
+    else void begin(roomId, { room: fetched });
+  }, [begin, joined, roomId, roomQuery.data, roomQuery.isFetched, sessionQuery.isFetched]);
 
   useQuery({
     queryKey: ["media", roomId],
@@ -181,32 +157,27 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
     if (!joined) return;
     sendPresence({ camera: cameraEnabled, screen: screenEnabled });
   }, [joined, cameraEnabled, screenEnabled, sendPresence]);
-  const loading = sessionQuery.isLoading || (roomQuery.isLoading && !gate);
+
+  const loading = sessionQuery.isLoading || roomQuery.isLoading;
   const showSkeleton = useDelayedFlag(loading);
+  const invite = useInvite(roomId, room?.name ?? "");
+
+  const broadcast = room?.broadcast ?? emptyBroadcast();
+  const streams = useStageStreams(livekit.tiles, hasBroadcastPlayback(broadcast, ome));
+  const people = useMemo(
+    () =>
+      buildPeople({
+        members: room?.members ?? [],
+        mediaByUserId,
+        voiceUserIds,
+        selfId: user?.userId,
+        selfLeftVoice: voiceLeft,
+      }),
+    [mediaByUserId, room?.members, user?.userId, voiceLeft, voiceUserIds],
+  );
 
   const selfMember = room?.members?.find((member) => member.userId === user?.userId);
   const omeLive = Boolean(ome?.healthy && ome.live);
-
-  const onGateJoin = async (values: { displayName: string; password?: string }) => {
-    try {
-      const session = await createSession(values.displayName);
-      setSession(session, session.token);
-      const result = await joinRoom(roomId, values.password);
-      applyJoin(result);
-      toast.success(t("toast.joined"));
-    } catch (error) {
-      if (isLockoutError(error)) {
-        setLockout(Date.now() + (error.remainingMs ?? 300000));
-        setGateError(undefined);
-        return;
-      }
-      if (error instanceof ApiError) {
-        setGateError(t(joinErrorMessageKey(error)));
-        return;
-      }
-      setGateError(t("toast.joinFailed"));
-    }
-  };
 
   const shouldBlockFn = useCallback(
     ({ current, next }: { current: { pathname: string }; next: { pathname: string } }) => {
@@ -227,8 +198,6 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
     if (blocker.status === "blocked") setLeaveOpen(true);
   }, [blocker.status]);
 
-  const requestLeave = () => setLeaveOpen(true);
-
   const cancelLeave = () => {
     setLeaveOpen(false);
     if (blocker.status === "blocked") blocker.reset();
@@ -248,94 +217,74 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
   };
 
   if (showSkeleton) return <TheaterSkeleton />;
-  if (isNotFoundError(roomQuery.error)) return <NotFoundScreen kind="room" />;
   if (loading) return <div className="min-h-dvh bg-surface-page" />;
 
-  const preview = roomQuery.data ?? room;
-  if (gate || !joined || !room) {
+  if (!joined || !room) {
     return (
-      <JoinGate
-        roomName={preview?.name}
-        hasPassword={Boolean(preview?.hasPassword)}
-        lockoutUntil={lockoutUntil}
-        error={gateError}
-        onJoin={onGateJoin}
-      />
+      <>
+        {flow.step ? <HomeLayout flow={flow} focusToken={0} /> : <div className="min-h-dvh bg-surface-page" />}
+        <JoinDialogs
+          flow={flow}
+          onExit={() => void navigate({ to: "/" })}
+          onOtherCode={() => {
+            flow.close();
+            void navigate({ to: "/", hash: "join" });
+          }}
+        />
+      </>
     );
   }
 
-  const members = (
-    <MemberList
-      members={room.members ?? []}
-      selfId={user?.userId}
-      actorRole={selfMember?.role}
-      omeLive={omeLive}
-      mediaByUserId={mediaByUserId}
-      roomId={roomId}
-    />
-  );
-  const chat = (
-    <ChatPanel
-      messages={messages}
-      selfId={user?.userId}
-      roomName={room.name}
-      mutedUntil={chatMutedUntil}
-      onSend={(text) => sendChat(text)}
-    />
-  );
-  const broadcast = room.broadcast ?? emptyBroadcast();
-  const stage = (
-    <Stage
-      broadcast={broadcast}
-      ome={ome}
-      tiles={livekit.tiles}
-      compact={layout === "mobile"}
-    />
-  );
-  const controls = (
-    <ControlBar
-      roomName={room.name}
-      roomId={roomId}
-      micEnabled={micEnabled}
-      cameraEnabled={cameraEnabled}
-      screenEnabled={screenEnabled}
-      micLocked={Boolean(selfMember?.muted)}
-      livekitUnavailable={livekitStatus === "unavailable"}
-      compact={layout === "mobile"}
-      onMic={livekit.setMic}
-      onCamera={livekit.setCamera}
-      onScreen={livekit.setScreen}
-      onLeave={requestLeave}
-    />
-  );
-
-  const memberCount = (room.members ?? []).filter((member) => member.present).length;
-  const layoutProps = {
-    roomName: room.name,
-    status: <BroadcastStatus broadcast={broadcast} omeLive={omeLive} />,
-    memberCount,
-    stage,
-    members,
-    chat,
-    controls,
-    onSettings: () => setSettingsOpen(true),
-    onLeaveHome: requestLeave,
-    sideTab,
-    onSideTabChange: setSideTab,
+  const selfName = user?.displayName ?? selfMember?.displayName ?? t("home.guestName");
+  const view: RoomView = {
+    roomId,
+    room,
+    selfId: user?.userId,
+    selfName,
+    selfRole: selfMember?.role,
+    people,
+    peopleCount: people.voice.length + people.chatOnly.length,
+    mediaByUserId,
+    localMutedUserIds,
+    streams,
+    selected: resolveSelection(stageChoice, streams),
+    broadcast,
+    ome,
+    omeLive,
+    micEnabled,
+    cameraEnabled,
+    screenEnabled,
+    micLocked: Boolean(selfMember?.muted),
+    voiceLeft,
+    voiceConnecting: livekitStatus === "connecting",
+    livekitUnavailable: livekitStatus === "unavailable",
     unreadChat,
+    panel,
+    chat: (
+      <ChatPanel
+        messages={messages}
+        selfId={user?.userId}
+        selfName={selfName}
+        roomName={room.name}
+        mutedUntil={chatMutedUntil}
+        onSend={(text) => sendChat(text)}
+      />
+    ),
+    setPanel,
+    togglePanel: (next) => setPanel((current) => (current === next ? null : next)),
+    onMic: livekit.setMic,
+    onCamera: livekit.setCamera,
+    onScreen: livekit.setScreen,
+    onLeaveVoice: livekit.leaveVoice,
+    onJoinVoice: livekit.joinVoice,
+    onInvite: invite,
+    onSettings: () => setSettingsOpen(true),
+    onLeave: () => setLeaveOpen(true),
   };
 
   return (
-    <>
-      {layout === "mobile" ? (
-        <MobileTheaterLayout
-          {...layoutProps}
-          drawerOpen={mobileDrawerOpen}
-          onDrawerOpenChange={setMobileDrawerOpen}
-        />
-      ) : (
-        <DesktopTheaterLayout {...layoutProps} />
-      )}
+    <RoomViewProvider value={view}>
+      {layout === "mobile" ? <MobileTheaterLayout /> : <DesktopTheaterLayout />}
       <LeaveRoomDialog open={leaveOpen} onCancel={cancelLeave} onConfirm={confirmLeave} />
       <RoomSettingsModal
         open={settingsOpen}
@@ -354,6 +303,6 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
         setMic={livekit.setMic}
         onChatSaved={(sec) => setRoom({ ...room, chatFloodBanSec: sec })}
       />
-    </>
+    </RoomViewProvider>
   );
 }

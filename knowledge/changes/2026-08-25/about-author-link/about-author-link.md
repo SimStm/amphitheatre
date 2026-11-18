@@ -19,5 +19,5 @@ A theater About screen is for version, license, source, and optional support. A 
 
 # Related
 
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
 - [Clients](/product/clients/clients.md)

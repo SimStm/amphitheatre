@@ -14,9 +14,11 @@ type RoomState = {
   micEnabled: boolean;
   cameraEnabled: boolean;
   screenEnabled: boolean;
-  lockoutUntil: number | null;
   chatMutedUntil: number | null;
   localMutedUserIds: Record<string, true>;
+  voiceUserIds: Record<string, true>;
+  voiceLeft: boolean;
+  chatDraft: string;
   setRoom: (room: Room | null) => void;
   setBroadcast: (broadcast: RoomBroadcast) => void;
   patchMembers: (members: RoomMember[]) => void;
@@ -33,9 +35,11 @@ type RoomState = {
     cameraEnabled?: boolean;
     screenEnabled?: boolean;
   }) => void;
-  setLockout: (until: number | null) => void;
   setChatMutedUntil: (until: number | null) => void;
   setLocalMuted: (userId: string, muted: boolean) => void;
+  setVoiceUsers: (userIds: string[]) => void;
+  setVoiceLeft: (voiceLeft: boolean) => void;
+  setChatDraft: (chatDraft: string) => void;
   reset: () => void;
 };
 
@@ -44,6 +48,7 @@ const emptyMedia: ParticipantMedia = {
   audioLevel: 0,
   camera: false,
   screen: false,
+  mic: "none",
   quality: "unknown",
   adaptive: false,
 };
@@ -58,9 +63,11 @@ const initial = {
   micEnabled: false,
   cameraEnabled: false,
   screenEnabled: false,
-  lockoutUntil: null as number | null,
   chatMutedUntil: null as number | null,
   localMutedUserIds: {} as Record<string, true>,
+  voiceUserIds: {} as Record<string, true>,
+  voiceLeft: false,
+  chatDraft: "",
 };
 
 export const useRoomStore = create<RoomState>((set) => ({
@@ -104,7 +111,6 @@ export const useRoomStore = create<RoomState>((set) => ({
   setLivekitStatus: (livekitStatus) => set({ livekitStatus }),
   setLivekitCreds: (livekitCreds) => set({ livekitCreds }),
   setLocalMediaFlags: (flags) => set(flags),
-  setLockout: (until) => set({ lockoutUntil: until }),
   setChatMutedUntil: (until) => set({ chatMutedUntil: until }),
   setLocalMuted: (userId, muted) =>
     set((state) => {
@@ -113,5 +119,9 @@ export const useRoomStore = create<RoomState>((set) => ({
       else delete next[userId];
       return { localMutedUserIds: next };
     }),
+  setVoiceUsers: (userIds) =>
+    set({ voiceUserIds: Object.fromEntries(userIds.map((id) => [id, true as const])) }),
+  setVoiceLeft: (voiceLeft) => set({ voiceLeft }),
+  setChatDraft: (chatDraft) => set({ chatDraft }),
   reset: () => set({ ...initial }),
 }));

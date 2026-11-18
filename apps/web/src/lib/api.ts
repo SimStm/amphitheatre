@@ -114,11 +114,16 @@ export async function createRoom(input: {
   name: string;
   password?: string;
   memberLimit?: number;
+  isPublic?: boolean;
 }): Promise<Room> {
   return request<Room>(apiPaths.rooms, {
     method: "POST",
     body: JSON.stringify(input),
   });
+}
+
+export async function listRooms(): Promise<Room[]> {
+  return request<Room[]>(apiPaths.rooms);
 }
 
 export async function getRoom(roomId: string): Promise<Room> {

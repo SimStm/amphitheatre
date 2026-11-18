@@ -11,7 +11,7 @@ sources:
     title: getVisible and join
   - id: theater
     resource: apps/web/src/components/theater/theater-screen.tsx
-    title: Invite JoinGate
+    title: Invite join flow
   - id: home
     resource: apps/web/src/components/home/home-screen.tsx
     title: Home join
@@ -19,7 +19,7 @@ sources:
 
 # Rule
 
-An invite link `/rooms/:id` must open the **join gate** when the room exists, including private and password-protected rooms. `GET /api/rooms/:id` returns **404 `not_found` only when the id is missing**. Existence is not hidden behind a fake 404 for private rooms. Non-members get the public preview (`id`, `name`, `hasPassword`, …) **without** `members`.
+An invite link `/rooms/:id` must open the **join flow** when the room exists, including private and password-protected rooms. `GET /api/rooms/:id` returns **404 `not_found` only when the id is missing**. Existence is not hidden behind a fake 404 for private rooms. Non-members get the public preview (`id`, `name`, `hasPassword`, …) **without** `members`.
 
 `POST /api/rooms/:id/join`:
 
@@ -30,6 +30,8 @@ An invite link `/rooms/:id` must open the **join gate** when the room exists, in
 | No display name | Client validation + `join.needName`. Do not map this to a password error. |
 
 The legacy code `cannot_join` stays in `errorCodes` but the API no longer emits it for missing rooms or wrong passwords. The SPA must not treat `cannot_join` as “wrong password”.
+
+A missing room opens the invalid-invite dialog with the exact code, from the home page and from an invite link. See [home-and-join-follow-figma](/rules/home-and-join-follow-figma.md).
 
 Room ids use a mixed-case alphabet. The Home code field must **not** use `text-transform: uppercase` (that only changes the look and makes people doubt the code). Disable mobile autocapitalize on that input.
 

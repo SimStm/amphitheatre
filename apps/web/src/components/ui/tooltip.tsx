@@ -1,19 +1,39 @@
 import type { ReactNode } from "react";
 import { cn } from "../../lib/cn.ts";
 
-type TooltipProps = {
+export type TooltipSide = "top" | "bottom" | "left" | "right";
+
+const sideClass: Record<TooltipSide, string> = {
+  top: "bottom-full left-1/2 mb-2 -translate-x-1/2 translate-y-1 group-hover/tooltip:translate-y-0 group-focus-within/tooltip:translate-y-0",
+  bottom:
+    "left-1/2 top-full mt-2 -translate-x-1/2 -translate-y-1 group-hover/tooltip:translate-y-0 group-focus-within/tooltip:translate-y-0",
+  left: "right-full top-1/2 mr-2 -translate-y-1/2 translate-x-1 group-hover/tooltip:translate-x-0 group-focus-within/tooltip:translate-x-0",
+  right:
+    "left-full top-1/2 ml-2 -translate-y-1/2 -translate-x-1 group-hover/tooltip:translate-x-0 group-focus-within/tooltip:translate-x-0",
+};
+
+export function Tooltip({
+  label,
+  children,
+  className,
+  side = "bottom",
+}: {
   label: string;
   children: ReactNode;
   className?: string;
-};
-
-export function Tooltip({ label, children, className }: TooltipProps) {
+  side?: TooltipSide;
+}) {
   return (
-    <span className={cn("group relative inline-flex", className)}>
+    <span className={cn("group/tooltip relative inline-flex", className)}>
       {children}
       <span
         role="tooltip"
-        className="pointer-events-none absolute top-full left-1/2 z-50 mt-2 -translate-x-1/2 rounded-md border border-border bg-surface-raised px-2 py-1 text-[11px] leading-4 font-medium whitespace-nowrap text-ink opacity-0 shadow-[0_8px_24px_rgb(12_10_8/0.28)] transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+        className={cn(
+          "float-surface-strong pointer-events-none absolute z-50 whitespace-nowrap rounded-lg px-2 py-1",
+          "font-sans text-xs text-ink opacity-0 transition-[opacity,transform] duration-150",
+          "group-hover/tooltip:opacity-100 group-focus-within/tooltip:opacity-100",
+          sideClass[side],
+        )}
       >
         {label}
       </span>

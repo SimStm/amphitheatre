@@ -22,21 +22,21 @@ sources:
 
 # Rule
 
-`useTheaterLayout` chooses `"mobile"` if `pointer: coarse` **or** `max-width: 767px`.[^hook] `useCompactChrome` is the same predicate for Home and join-gate chrome.
+`useTheaterLayout` chooses `"mobile"` if `pointer: coarse` **or** `max-width: 767px`.[^hook] `useCompactChrome` is the same predicate for the site chrome and settings.
 
-- Mobile: stage on top (fills leftover height), **Audience / Chat as one glass-panel card** just above the dock (same panel radius as the dock; tabs are the bottom of that card, not a separate pill). Closed by default; tap to expand, tap the selected tab to collapse. **Full-width floating dock as the bottom app bar** (icon-only; labels stay `sr-only`). Header is in-flow: wordmark + Settings. Settings is a fullscreen sheet. Room title is left, broadcast badge is right, on the second header row. Camera tiles use a 1–2 column Meet-style grid.[^mobile]
-- Desktop: stage + chat and member side panels; dock stays in the header.[^desktop]
+- Mobile: full-screen stage. Title, invite, and the voice pill float at the top; a thumbnail strip (when more than one stream is active) and a full-width dock float at the bottom, and the dock includes the microphone. Chat and People open in a bottom sheet with `role="tab"` tabs that closes by dragging or from its close button. Floats hide like on desktop, except while the sheet is open.[^mobile]
+- Desktop: full-screen stage with the floats in [room-floating-interface](/rules/room-floating-interface.md).[^desktop]
 
-Do not implement the mobile theater as “the same three columns with `hidden lg:flex`”. Touch targets (`size="touch"` / `iconTouch`) and tabs with `role="tab"` are required on the mobile layout.
+Do not implement the mobile theater as “the same three columns with `hidden lg:flex`”. Controls keep a touch target of at least 44px, and the sheet tabs use `role="tab"`.
 
-When the shared broadcast is enabled but **not** playing, do not trap the offline/waiting copy inside a video tile. Render a full-width card that sizes to its content; camera and screen tiles stay in the grid.
+When the shared broadcast is enabled but **not** playing, do not trap the offline or waiting copy inside a video tile. Show it as a card over the stage; camera and screen tiles stay in place.
 
 Infra: UDP may fail on 4G; LiveKit already publishes ICE/TCP `7881`. Do not assume UDP on the mobile client. Tests: `docs/load-testing.md` section 9.
 
 # Related
 
 - [Clients](/product/clients/clients.md)
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Room settings and devices](/rules/room-settings-and-devices.md)
 - [Reconnect last priority](/rules/reconnect-last-priority.md) (iOS background tab)
 
 [^hook]: useTheaterLayout

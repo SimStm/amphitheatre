@@ -82,13 +82,13 @@ Copy `.env.example`. Real secrets only in `.env` (gitignored). Full list: [docs/
 | `LIVEKIT_HTTP_URL` | `http://localhost:7880` — backend RoomService |
 | `REDIS_URL` | Valkey on the host (RESP). **LiveKit uses DB 1.** Hono uses SQLite; DB 0 is unused |
 | `OME_HOST_IP` | IP announced in OME ICE (`127.0.0.1` on the machine; LAN IP for a phone) |
-| `OME_API_ACCESS_TOKEN` | REST Basic auth. **Must match** `<AccessToken>` in `Server.xml` |
+| `OME_API_ACCESS_TOKEN` | REST Basic auth. Compose passes it to `<AccessToken>` in `Server.xml` |
 | `OME_API_URL` | `http://localhost:8081` |
 | `OME_RTMP_INGEST_URL` / `OME_RTMP_URL` | `rtmp://localhost:1935/app` (API alias) |
 | `OME_WEBRTC_PLAYBACK_BASE` / `OME_PLAYBACK_URL` | `ws://localhost:3333/app` (API alias) |
 | `OME_LLHLS_PLAYBACK_BASE` | `http://localhost:3333/app` |
 | `OME_ADMISSION_WEBHOOK_URL` | Backend must expose this when the webhook is uncommented in the XML |
-| `LIVEKIT_WEBHOOK_URL` | Already on the API: `POST /webhooks/livekit` (HMAC = `LIVEKIT_API_KEY`/`SECRET`; `webhook.api_key` in the YAML must be the same key) |
+| `LIVEKIT_WEBHOOK_URL` | Already on the API: `POST /webhooks/livekit` (HMAC = `LIVEKIT_API_KEY`/`SECRET`; Compose writes `LIVEKIT_API_KEY` into `webhook.api_key` at start) |
 
 LiveKit room name = Amphitheatre `roomId`. Infra **does not** authenticate participants; Hono signs the token with `canPublish` / `canPublishSources`. Simulcast is already the SDK default.
 
@@ -243,10 +243,10 @@ HTTP/WS paths: [docs/api.md](../docs/api.md).
 
 ## Pinned images
 
-- `livekit/livekit-server:v1.13.5`
+- `livekit/livekit-server:v1.13.11`
 - `ovenmedialabs/ovenmediaengine:v0.21.0`
-- `valkey/valkey:9.1.1-alpine` (Compose service `redis`, container `coliseum-valkey`)
-- `caddy:2.11.4-alpine` (profile `caddy`)
-- `coturn/coturn:4.17.2-alpine` (commented profile)
+- `valkey/valkey:9.1.3-alpine` (Compose service `redis`, container `coliseum-valkey`)
+- `caddy:2.11.9-alpine` (profile `caddy`)
+- `coturn/coturn:4.19.1-alpine` (commented profile)
 
 Docs used: [OME Docker](https://ovenmedialabs.com/docs/ome/getting-started/getting-started-with-docker), [OME Server.xml](https://ovenmedialabs.com/docs/ome/configuration), [OME REST streams](https://ovenmedialabs.com/docs/ome/rest-api/v1/virtualhost/application/stream), [OME AdmissionWebhooks](https://ovenmedialabs.com/docs/ome/access-control/admission-webhooks), [LiveKit config-sample.yaml](https://github.com/livekit/livekit/blob/master/config-sample.yaml), [Compose profiles](https://docs.docker.com/compose/how-tos/profiles/).

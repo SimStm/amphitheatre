@@ -30,6 +30,6 @@ User QOL request after the room rework: more area for the stage, a usable chat i
 
 # Related
 
-- [Theater header chrome](/rules/theater-header-chrome.md)
+- [Theater header chrome](/rules/room-settings-and-devices.md)
 - [Chat flood soft-ban](/rules/chat-flood-soft-ban.md)
-- [Room follows HTML prototype](/rules/room-follows-html-prototype.md)
+- [Room follows HTML prototype](/rules/room-floating-interface.md)

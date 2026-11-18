@@ -27,7 +27,7 @@ Technical identifiers **do not** need to be renamed under this rule: packages `@
 
 # Related
 
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Home and join follow Figma](/rules/home-and-join-follow-figma.md)
 - [i18n en pt es](/rules/i18n-en-pt-es.md)
 - [Clients](/product/clients/clients.md)
 

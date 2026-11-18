@@ -13,7 +13,7 @@ sources:
     resource: knowledge/references/prototypes/home.html
     title: Prototype
   - id: rule
-    resource: /rules/home-follows-html-prototype.md
+    resource: /rules/home-and-join-follow-figma.md
     title: Fidelity rule
 ---
 
@@ -31,5 +31,5 @@ Request to compare React with the HTML in the browser and close the Home visual 
 
 # Related
 
-- [Home follows HTML prototype](/rules/home-follows-html-prototype.md)
+- [Home follows HTML prototype](/rules/home-and-join-follow-figma.md)
 - [Clients](/product/clients/clients.md)

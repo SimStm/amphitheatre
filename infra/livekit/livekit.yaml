@@ -82,7 +82,8 @@ limit:
 #   per_user_relay_allocation_limit: 12
 
 # Signed with LIVEKIT_API_KEY + LIVEKIT_API_SECRET (no extra HMAC env).
-# webhook.api_key must equal LIVEKIT_API_KEY in .env (default: devkey).
+# docker-compose.yml replaces webhook.api_key with LIVEKIT_API_KEY from .env at
+# start. Outside Compose, it must equal that key by hand (default: devkey).
 webhook:
   api_key: devkey
   urls:
