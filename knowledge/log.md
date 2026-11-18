@@ -1,5 +1,10 @@
 # Directory update log
 
+## 2026-11-18
+
+* **Creation**: Rules [roadmap](/rules/roadmap.md) (items live in the private `../amphitheatre-docs`; skip the step if it is missing) and [plan-before-implementing](/rules/plan-before-implementing.md). New CHANGELOG bullets link to their bundle: [changelog-and-release-process](/rules/changelog-and-release-process.md). Change: [agents-knowledge-roadmap](/changes/2026-11-18/agents-knowledge-roadmap/agents-knowledge-roadmap.md).
+* **Removal**: Two proposed design rules for features that do not exist moved to the private docs repository.
+
 ## 2026-08-25
 
 * **Fix**: Operator occupancy is theater presence after reconciling stale `left_at IS NULL` rows with the WebSocket hub; KPI help tooltips; factory reset of theater SQLite with a typed phrase (operators stay); operators password field no longer crashes. Rule [operator-admin-console](/rules/operator-admin-console.md). Change: [admin-occupancy-reset](/changes/2026-08-25/admin-occupancy-reset/admin-occupancy-reset.md).

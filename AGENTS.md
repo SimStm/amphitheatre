@@ -6,6 +6,14 @@ Public/root docs (README, CONTRIBUTING, CLA, LICENSE, AGENTS, `docs/*.md` guides
 
 Before implementing: read [knowledge/index.md](knowledge/index.md), then `knowledge/product/` and `knowledge/rules/`. The historical plan in [knowledge/references/plano-watchparty-miniDiscord.md](knowledge/references/plano-watchparty-miniDiscord.md) is **not** the source of truth — several decisions there were superseded by the code (SQLite instead of Redis for rooms, guest JWT without an email account, optional OME). Distinguish **implemented** (code + tests) from **intended** (plan or docs). Do not invent features.
 
+## Before you start
+
+1. Read this file and [knowledge/index.md](knowledge/index.md).
+2. Read every file in `knowledge/rules/` except `index.md`. A rule with `status: proposed` is a design direction, not implemented behavior.
+3. Skim the `knowledge/product/` docs for the area you will touch.
+4. If the work is a roadmap item and `../amphitheatre-docs` exists, read the item in its `knowledge/roadmap/`.
+5. For a feature or fix, open the change bundle before editing code (see "Planning and implementation").
+
 ## Product
 
 Amphitheatre is an open-source mini-Discord-style theater: ephemeral rooms with **text chat**, **voice**, **camera**, and **screenshare** (LiveKit), plus an optional **broadcast** stage (OvenMediaEngine + OBS) so everyone watches the same live stream.
@@ -165,7 +173,7 @@ OKF bundle **0.2**. Root: `knowledge/index.md` (`okf_version: "0.2"`). Prose in 
 |---|---|
 | `knowledge/product/` | product vision (macro) |
 | `knowledge/rules/` | code/process rules the agent **must** apply |
-| `knowledge/changes/` | what actually landed, by date |
+| `knowledge/changes/` | what actually landed, by date, with its spec, plan, and tasks |
 | `knowledge/references/` | external/historical material (original plan) |
 
 Every `.md` that is not `index.md` or `log.md` needs YAML frontmatter with non-empty `type`. Links between concepts: **bundle-relative** paths with `/` (example: `[rule](/rules/no-recording.md)`).
@@ -174,16 +182,55 @@ Every `.md` that is not `index.md` or `log.md` needs YAML frontmatter with non-e
 
 When the user states a durable preference, process, or “this feature must work as X”, the agent **MUST** create or update a file in `knowledge/rules/` (or edit the existing one). Never leave that only in chat. See [self-aware-knowledge](knowledge/rules/self-aware-knowledge.md).
 
+### Planning and implementation
+
+Before editing code for a feature or fix, create or update one bundle in `knowledge/changes/<yyyy-MM-dd>/<feature>/`. Follow-ups on the same change reuse it. Full rule: [plan-before-implementing](knowledge/rules/plan-before-implementing.md).
+
+- `spec.md`: the contract, ending in observable acceptance criteria.
+- `plan.md`: the approach, grounded in real files, with risks and deviations.
+- `tasks.md`: ordered tasks, the check for each, status, and results.
+
+A new session must be able to continue from these files alone. Separate observed facts from proposals. Plan-only request: write the bundle and do not change code. On finish: check every criterion, run the relevant tests, and record results and limitations.
+
 ### How to record a change
 
-1. Create `knowledge/changes/<yyyy-MM-dd>/<feature>/<feature>.md` with frontmatter `type: Change`, `title`, `description`, `generated`, `sources` pointing at code, and a body: what landed, files, why, links to product + rules.
+1. Add `knowledge/changes/<yyyy-MM-dd>/<feature>/<feature>.md` beside the planning files, with frontmatter `type: Change`, `title`, `description`, `generated`, `sources` pointing at code, and a body: what landed, files, why, links to product + rules.
 2. Update `knowledge/changes/<yyyy-MM-dd>/index.md`.
-3. If the date is new, update `knowledge/changes/index.md`.
+3. If the date is new, update `knowledge/changes/index.md` and the Changes list in `knowledge/index.md`.
 4. Add an entry in `knowledge/log.md` (newest first, heading `YYYY-MM-DD`).
 5. If a new product/rule concept is born, create it and point to it from the corresponding `index.md`.
-6. Add a bullet under `## [Unreleased]` in the root `CHANGELOG.md` (English, [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) categories: `Added` / `Changed` / `Fixed` / `Removed`). This is the macro history for humans; the OKF bundle above stays the detailed record. Every feature or fix needs both.
+6. Add a bullet under `## [Unreleased]` in the root `CHANGELOG.md` (English, [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) categories: `Added` / `Changed` / `Fixed` / `Removed`), ending with a full-URL link to the bundle. See [changelog-and-release-process](knowledge/rules/changelog-and-release-process.md). This is the macro history for humans; the OKF bundle above stays the detailed record. Every feature or fix needs both.
 
 Bootstrap change date: **2026-08-22**.
+
+### Roadmap
+
+This repository is public and records what exists. Roadmap items and other future plans live in the private `amphitheatre-docs` repository, normally beside this one at `../amphitheatre-docs`. Items go in its `knowledge/roadmap/` and follow that repository's `AGENTS.md`. Rule: [roadmap](knowledge/rules/roadmap.md).
+
+If that directory is missing, ignore the roadmap step and continue. Do not create it, and do not add a roadmap here. Refer to it only by name or relative path, never by an absolute machine path. Do not copy private content into this repository.
+
+### Where knowledge goes
+
+| After the work | Write to |
+|---|---|
+| Constraint for every future task | `knowledge/rules/<topic>.md` + `knowledge/rules/index.md` |
+| Durable product behavior | `knowledge/product/<topic>/<topic>.md` |
+| This feature or fix | `knowledge/changes/<date>/<feature>/`, opened before code |
+| Future work, ideas for later, removed features that may return | `../amphitheatre-docs/knowledge/roadmap/` if that directory exists; otherwise skip |
+| Human macro history | `CHANGELOG.md`, linked to the bundle |
+| Human onboarding, running, or structure | `README.md` and the matching `docs/` guide |
+
+Prefer updating an existing file over adding a near-duplicate. A chat conclusion that changes product behavior is incomplete until it is written here.
+
+### Definition of done
+
+- [ ] Code and tests as needed (no code for a plan-only request)
+- [ ] Bundle current, including `spec.md`, `plan.md`, and `tasks.md`
+- [ ] Every acceptance criterion checked; tests run; results and limitations recorded; deviations justified
+- [ ] CHANGELOG bullet linked to the bundle
+- [ ] Rules and product docs updated if durable behavior changed
+- [ ] `README.md` and `docs/` updated if onboarding or usage changed
+- [ ] If `../amphitheatre-docs` exists: its roadmap updated when an item started, finished, was blocked, or was unblocked
 
 ### Releases
 
@@ -213,3 +260,14 @@ pnpm typecheck    # @coliseum/shared + @coliseum/api + @coliseum/web + @coliseum
 Load and stress: [docs/load-testing.md](docs/load-testing.md). The k6 script in `infra/loadtest/k6/api-rooms.js` still uses old paths (`POST /rooms`); the real contract is `/api/...` in `packages/shared` and [docs/api.md](docs/api.md). When touching load tests, align the script to the frozen contract — not the other way around.
 
 API tests cover: 3 failures -> 5 min lockout; roles; owner/admin persistence after leave/rejoin (including a “new process” on the same SQLite); OME down without taking the API down.
+
+## What not to do
+
+- Do not edit code for a feature or fix before its `spec.md`, `plan.md`, and `tasks.md` exist and match the current code.
+- Do not change behavior defined in `spec.md` without stating that decision first.
+- Do not leave a feature or fix without both a bundle and a CHANGELOG bullet.
+- Do not keep roadmap or "later" lists in this repository.
+- Do not write absolute machine paths in this repository. Refer to the private repository as `../amphitheatre-docs`.
+- Do not put commercial plans, pricing, or customer information in this public repository.
+- Do not keep always-on rules only in IDE-specific config. Use `knowledge/rules/`.
+- Do not describe planned behavior as implemented.

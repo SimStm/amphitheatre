@@ -2,9 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses [Semantic Versioning](https://semver.org/). Entries here are the macro history, always in English. Full technical detail for each change lives in the OKF catalog under [`knowledge/changes/`](knowledge/changes/).
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses [Semantic Versioning](https://semver.org/). Entries here are the macro history, always in English. Full technical detail for each change lives in the OKF catalog under [`knowledge/changes/`](knowledge/changes/). Since 2026-11-18, each entry links to its change record.
 
 ## [Unreleased]
+
+### Added
+
+- Contributor workflow: a short spec, plan, and task list before each feature or fix. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/agents-knowledge-roadmap))
 
 ## [1.3.1] - 2026-08-27
 

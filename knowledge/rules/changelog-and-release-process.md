@@ -24,6 +24,8 @@ sources:
 
 Every feature or fix gets a bullet under `## [Unreleased]` in the root `CHANGELOG.md`, in English, using [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) categories (`Added` / `Changed` / `Fixed` / `Removed`). This is in **addition** to the OKF change bundle in `knowledge/changes/`, not instead of it — the OKF bundle is the detailed record, `CHANGELOG.md` is the macro one a human skims before upgrading.
 
+Each new bullet ends with a link to its bundle, using the full URL: `([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/<yyyy-MM-dd>/<feature>))`. A relative path would break, because the same text becomes the GitHub Release notes. Do not put link reference definitions (`[name]: url`) inside a version section: `scripts/extract-changelog.sh` stops reading at the first one. Entries released before 2026-11-18 have no link and are not backfilled.
+
 Releasing a new version is a **manual** flow, never automatic on merge to `main`:
 
 1. Run `scripts/extract-changelog.sh promote X.Y.Z` to move `[Unreleased]`'s content into a new `## [X.Y.Z] - YYYY-MM-DD` section (leaves `[Unreleased]` empty above it and refreshes the link references at the bottom).

@@ -36,3 +36,5 @@ Code and process rules. The agent must apply them; if the user changes a durable
 * [Public docs in English](public-docs-english.md) - README, CONTRIBUTING, CLA, AGENTS, LICENSE, docs/, infra/README.md, and knowledge/ are English
 * [CHANGELOG and release process](changelog-and-release-process.md) - Unreleased bullet per change; manual git tag triggers GitHub Release + Docker Hub
 * [Operator admin console](operator-admin-console.md) - separate bind/port; admin session; scrape LiveKit /metrics + OME REST; no Prometheus server
+* [Plan before implementing](plan-before-implementing.md) - spec.md, plan.md, and tasks.md exist before code for a feature or fix
+* [Roadmap lives in the private docs repository](roadmap.md) - items go to ../amphitheatre-docs; skip the step if it is missing; no absolute paths

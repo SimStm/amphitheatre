@@ -132,8 +132,8 @@ Load: [docs/load-testing.md](docs/load-testing.md). The k6 script in `infra/load
 ## Pull request flow
 
 1. Branch from `main`. Suggested prefixes: `feat/`, `fix/`, `docs/`, `test/`, `refactor/`, `chore/`.
-2. Implement following `AGENTS.md` and `knowledge/rules/`.
-3. For a feature or behavior fix, record an OKF change in `knowledge/changes/<yyyy-MM-dd>/<feature>/` (see `AGENTS.md`). Update `knowledge/log.md` and the matching `index.md` files.
+2. For a feature or behavior fix, open a change record in `knowledge/changes/<yyyy-MM-dd>/<feature>/` with `spec.md`, `plan.md`, and `tasks.md` before editing code (see `AGENTS.md`).
+3. Implement following `AGENTS.md` and `knowledge/rules/`. Then finish the change record, update `knowledge/log.md` and the matching `index.md` files, and add a `CHANGELOG.md` bullet linked to the record.
 4. Update [docs/api.md](docs/api.md) and shared if the HTTP/WS contract changed.
 5. Open the PR with an English description: what changed and why, linked issue, what you tested and what you did not. Visual change: describe the flow (a screenshot helps; it does not replace behavior).
 6. **Sign the ICLA** on the CLA Assistant comment (exact sentence above). Without a signature the check fails and the PR will not be merged.
