@@ -164,6 +164,14 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
 
   const broadcast = room?.broadcast ?? emptyBroadcast();
   const streams = useStageStreams(livekit.tiles, hasBroadcastPlayback(broadcast, ome));
+  const stageIds = resolveSelection(stageChoice, streams);
+  const stageKey = stageIds.join("|");
+  const { setStageStreams } = livekit;
+
+  useEffect(() => {
+    setStageStreams(stageKey ? stageKey.split("|") : []);
+  }, [stageKey, setStageStreams]);
+
   const people = useMemo(
     () =>
       buildPeople({
@@ -247,7 +255,7 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
     mediaByUserId,
     localMutedUserIds,
     streams,
-    selected: resolveSelection(stageChoice, streams),
+    selected: stageIds,
     broadcast,
     ome,
     omeLive,
@@ -301,6 +309,7 @@ export function TheaterScreen({ roomId }: { roomId: string }) {
         micEnabled={micEnabled}
         micLocked={Boolean(selfMember?.muted)}
         setMic={livekit.setMic}
+        applyMediaQuality={livekit.applyMediaQuality}
         onChatSaved={(sec) => setRoom({ ...room, chatFloodBanSec: sec })}
       />
     </RoomViewProvider>

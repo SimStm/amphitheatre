@@ -4,6 +4,7 @@ import {
   RemoteAudioTrack,
   RoomEvent,
   Track,
+  type LocalTrack,
   type LocalTrackPublication,
   type RemoteParticipant,
   type RemoteTrack,
@@ -23,6 +24,16 @@ import {
   SCREEN_SHARE_CAPTURE_OPTIONS,
 } from "../lib/livekit-media.ts";
 import { classifyGetUserMediaError, mediaFailureToastKey } from "../lib/media-permissions.ts";
+import {
+  cameraCaptureOptions,
+  cameraPublishOptions,
+  readMediaQuality,
+  requestedVideoQuality,
+  screenCaptureOptions,
+  screenPublishOptions,
+  voicePublishOptions,
+  type MediaQualityKey,
+} from "../lib/media-quality.ts";
 import type { ParticipantMedia } from "../shared-types.ts";
 import { useRoomStore } from "../stores/room-store.ts";
 
@@ -136,6 +147,21 @@ function applyInputVolume(room: Room, volume: number) {
   });
 }
 
+function stageTileId(identity: string, trackSid: string): string {
+  return `${identity}-${trackSid}`;
+}
+
+function applyReceiveQuality(room: Room, stageIds: ReadonlySet<string> | null) {
+  const { receive } = readMediaQuality();
+  room.remoteParticipants.forEach((participant) => {
+    participant.videoTrackPublications.forEach((pub) => {
+      if (!pub.isSubscribed) return;
+      const onStage = !stageIds || stageIds.has(stageTileId(participant.identity, pub.trackSid));
+      pub.setVideoQuality(requestedVideoQuality(receive, onStage));
+    });
+  });
+}
+
 function isActiveVideoPublication(
   pub: { track?: Track | null; isMuted: boolean; isSubscribed?: boolean; source: Track.Source },
   isLocal: boolean,
@@ -150,6 +176,7 @@ function isActiveVideoPublication(
 
 export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
   const roomRef = useRef<Room | null>(null);
+  const stageIdsRef = useRef<ReadonlySet<string> | null>(null);
   const [tiles, setTiles] = useState<StageTile[]>([]);
   const localMutedUserIds = useRoomStore((s) => s.localMutedUserIds);
   const voiceLeft = useRoomStore((s) => s.voiceLeft);
@@ -163,7 +190,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
         if (!track) return;
         const screen = pub.source === Track.Source.ScreenShare;
         next.push({
-          id: `${participant.identity}-${pub.trackSid}`,
+          id: stageTileId(participant.identity, pub.trackSid),
           identity: participant.identity,
           name: participant.name || participant.identity,
           source: screen ? "screen" : "camera",
@@ -191,8 +218,9 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
 
   useEffect(() => {
     if (!roomId || !enabled) return;
+    // Layers follow the viewer's choice, not the size of the video element.
     const room = new Room({
-      adaptiveStream: true,
+      adaptiveStream: false,
       dynacast: true,
       webAudioMix: true,
     });
@@ -220,6 +248,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
           store.setMedia(participant.identity, { adaptive: true });
         }
         track.mediaStreamTrack?.addEventListener("ended", () => refreshTiles(room), { once: true });
+        applyReceiveQuality(room, stageIdsRef.current);
       }
       refreshTiles(room);
     };
@@ -379,7 +408,11 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     if (!room) return;
     try {
       // Safari/iOS drop the user-activation token if we await startAudio() first.
-      await room.localParticipant.setMicrophoneEnabled(enabledMic);
+      await room.localParticipant.setMicrophoneEnabled(
+        enabledMic,
+        undefined,
+        voicePublishOptions(readMediaQuality().voice),
+      );
       if (enabledMic) applyInputVolume(room, readDevicePrefs().inputVolume);
       useRoomStore.getState().setLocalMediaFlags({ micEnabled: enabledMic });
       void unlockPlayback(room);
@@ -403,7 +436,12 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     const room = roomRef.current;
     if (!room) return;
     try {
-      await room.localParticipant.setCameraEnabled(enabledCam);
+      const { camera } = readMediaQuality();
+      await room.localParticipant.setCameraEnabled(
+        enabledCam,
+        cameraCaptureOptions(camera),
+        cameraPublishOptions(camera),
+      );
       useRoomStore.getState().setLocalMediaFlags({ cameraEnabled: enabledCam });
       refreshTiles(room);
       void unlockPlayback(room);
@@ -419,11 +457,18 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
       if (!enabledShare) {
         await room.localParticipant.setScreenShareEnabled(false);
       } else {
+        const quality = readMediaQuality();
+        const capture = screenCaptureOptions(quality);
+        const publish = screenPublishOptions(quality);
         try {
-          await room.localParticipant.setScreenShareEnabled(true, SCREEN_SHARE_CAPTURE_OPTIONS);
+          await room.localParticipant.setScreenShareEnabled(
+            true,
+            { ...SCREEN_SHARE_CAPTURE_OPTIONS, ...capture },
+            publish,
+          );
         } catch (err) {
           if (isDisplayMediaCancelled(err)) throw err;
-          await room.localParticipant.setScreenShareEnabled(true);
+          await room.localParticipant.setScreenShareEnabled(true, capture, publish);
         }
       }
     } catch (err) {
@@ -436,6 +481,34 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
       });
       refreshTiles(room);
       void unlockPlayback(room);
+    }
+  };
+
+  const setStageStreams = useCallback((ids: string[]) => {
+    stageIdsRef.current = new Set(ids);
+    const room = roomRef.current;
+    if (room) applyReceiveQuality(room, stageIdsRef.current);
+  }, []);
+
+  const republish = async (source: Track.Source, enabled: boolean, enable: () => Promise<void>) => {
+    const room = roomRef.current;
+    const track = room?.localParticipant.getTrackPublication(source)?.track;
+    if (!room || !track) return;
+    await room.localParticipant.unpublishTrack(track as LocalTrack);
+    if (enabled) await enable();
+  };
+
+  /** A running screen share keeps its quality: changing it would reopen the browser picker. */
+  const applyMediaQuality = async (key: MediaQualityKey) => {
+    const room = roomRef.current;
+    if (!room) return;
+    const state = useRoomStore.getState();
+    if (key === "receive") applyReceiveQuality(room, stageIdsRef.current);
+    if (key === "voice") {
+      await republish(Track.Source.Microphone, state.micEnabled, () => setMic(true));
+    }
+    if (key === "camera") {
+      await republish(Track.Source.Camera, state.cameraEnabled, () => setCamera(true));
     }
   };
 
@@ -477,5 +550,7 @@ export function useLivekitRoom(roomId: string | undefined, enabled: boolean) {
     switchDevice,
     setOutputVolume,
     setInputVolume,
+    setStageStreams,
+    applyMediaQuality,
   };
 }

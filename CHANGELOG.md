@@ -6,6 +6,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-11-18
+
+### Added
+
+- Quality settings for what you watch, your voice, your camera, your screen, and the kind of content you share. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/media-quality))
+
+### Changed
+
+- Screen sharing now sends 1080p at 30 fps by default, and camera and voice use higher default quality. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/media-quality))
+- Self-hosted LiveKit allows about 1 Gbps of total traffic instead of 100 Mbps. Update `livekit.yaml` and restart LiveKit to apply it. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/media-quality))
+
+### Fixed
+
+- People watching a shared screen receive the best available quality instead of a smaller version chosen from the size of their window. ([details](https://github.com/simstm/amphitheatre/tree/main/knowledge/changes/2026-11-18/media-quality))
+
 ## [2.0.0] - 2026-11-18
 
 Amphitheatre 2.0 is a full visual redesign. The home page, join flow, and room now share one design system, and the room becomes a full-screen stage with floating controls. Each person chooses what fills their own screen, and the interface gets out of the way while you watch.
@@ -129,7 +144,8 @@ Rooms, roles, moderation, and the API work as before. To update a self-hosted in
 
 - Multi-arch Docker release build: pin the JS-only `deps`/`build` stages in `Dockerfile` to `--platform=$BUILDPLATFORM` so `pnpm install`/`vite build` run natively on the runner instead of crashing under QEMU emulation ("illegal instruction") while cross-building `linux/arm64`.
 
-[Unreleased]: https://github.com/simstm/amphitheatre/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/simstm/amphitheatre/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/simstm/amphitheatre/releases/tag/v2.0.1
 [2.0.0]: https://github.com/simstm/amphitheatre/releases/tag/v2.0.0
 [1.3.1]: https://github.com/simstm/amphitheatre/releases/tag/v1.3.1
 [1.2.0]: https://github.com/simstm/amphitheatre/releases/tag/v1.2.0

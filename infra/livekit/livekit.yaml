@@ -64,8 +64,8 @@ room:
 limit:
   # ~400 tracks in+out per CPU by default. Cap for a small dedicated box.
   num_tracks: 800
-  # ~100 Mbps hint for a home/lab uplink; raise on a dedicated host.
-  bytes_per_sec: 12500000
+  # About 1 Gbps. A few high-quality screen shares can pass 100 Mbps with many viewers.
+  bytes_per_sec: 125000000
   subscription_limit_video: 50
   subscription_limit_audio: 50
 

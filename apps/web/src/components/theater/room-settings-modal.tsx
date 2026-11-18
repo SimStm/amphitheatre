@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { MediaDeviceKindName } from "../../hooks/use-livekit.ts";
 import { useCompactChrome } from "../../hooks/use-media.ts";
+import type { MediaQualityKey } from "../../lib/media-quality.ts";
 import type { OmeInfo, RoomBroadcast } from "../../shared-types.ts";
 import { cn } from "../../lib/cn.ts";
 import { Dialog } from "../ui/dialog.tsx";
@@ -39,6 +40,7 @@ type RoomSettingsModalProps = {
   micEnabled: boolean;
   micLocked: boolean;
   setMic: (enabled: boolean) => Promise<void>;
+  applyMediaQuality: (key: MediaQualityKey) => Promise<void>;
 };
 
 export function RoomSettingsModal({
@@ -57,6 +59,7 @@ export function RoomSettingsModal({
   micEnabled,
   micLocked,
   setMic,
+  applyMediaQuality,
 }: RoomSettingsModalProps) {
   const { t } = useTranslation();
   const compact = useCompactChrome();
@@ -132,6 +135,7 @@ export function RoomSettingsModal({
               micEnabled={micEnabled}
               micLocked={micLocked}
               setMic={setMic}
+              applyMediaQuality={applyMediaQuality}
             />
           ) : null}
           {current === "about" ? <AboutPanel /> : null}

@@ -1,10 +1,26 @@
-import { IconHeadphones, IconMicrophone, IconVideo } from "@tabler/icons-react";
+import {
+  IconDeviceDesktop,
+  IconEye,
+  IconHeadphones,
+  IconMicrophone,
+  IconPhotoVideo,
+  IconVideo,
+} from "@tabler/icons-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import type { MediaDeviceKindName } from "../../hooks/use-livekit.ts";
 import { readDevicePrefs, writeDevicePrefs } from "../../lib/device-prefs.ts";
 import { classifyGetUserMediaError, mediaFailureToastKey } from "../../lib/media-permissions.ts";
+import {
+  qualityLevels,
+  readMediaQuality,
+  receiveQualities,
+  screenContents,
+  writeMediaQuality,
+  type MediaQualityKey,
+  type MediaQualityPrefs,
+} from "../../lib/media-quality.ts";
 import { Field } from "../ui/field.tsx";
 import { Select } from "../ui/select.tsx";
 
@@ -23,7 +39,43 @@ type MediaSettingsPanelProps = {
   micEnabled?: boolean;
   micLocked?: boolean;
   setMic?: (enabled: boolean) => Promise<void>;
+  applyMediaQuality?: (key: MediaQualityKey) => Promise<void>;
 };
+
+function QualitySelect<K extends MediaQualityKey>({
+  id,
+  label,
+  icon,
+  value,
+  options,
+  optionLabel,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  icon: ReactNode;
+  value: MediaQualityPrefs[K];
+  options: readonly MediaQualityPrefs[K][];
+  optionLabel: (value: MediaQualityPrefs[K]) => string;
+  onChange: (value: MediaQualityPrefs[K]) => void;
+}) {
+  return (
+    <Field id={id} label={label}>
+      <Select
+        id={id}
+        leading={icon}
+        value={value}
+        onChange={(event) => onChange(event.target.value as MediaQualityPrefs[K])}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {optionLabel(option)}
+          </option>
+        ))}
+      </Select>
+    </Field>
+  );
+}
 
 function DeviceSelect({
   id,
@@ -120,6 +172,7 @@ export function MediaSettingsPanel({
   micEnabled = false,
   micLocked = false,
   setMic,
+  applyMediaQuality,
 }: MediaSettingsPanelProps) {
   const { t } = useTranslation();
   const [devices, setDevices] = useState<DeviceLists>({
@@ -128,6 +181,7 @@ export function MediaSettingsPanel({
     videoinput: [],
   });
   const [prefs, setPrefs] = useState(readDevicePrefs);
+  const [quality, setQuality] = useState(readMediaQuality);
   const [level, setLevel] = useState(0);
   const [testing, setTesting] = useState(false);
   const [previewOn, setPreviewOn] = useState(false);
@@ -242,6 +296,15 @@ export function MediaSettingsPanel({
   const onInputVolume = (value: number) => {
     persist({ ...prefs, inputVolume: value });
     setInputVolume(value);
+  };
+
+  const onQuality = <K extends MediaQualityKey>(key: K, value: MediaQualityPrefs[K]) => {
+    const next = { ...quality, [key]: value };
+    setQuality(next);
+    writeMediaQuality(next);
+    void applyMediaQuality?.(key).catch((err: unknown) => {
+      toast.error(t(mediaFailureToastKey(classifyGetUserMediaError(err))));
+    });
   };
 
   const testMic = async () => {
@@ -402,6 +465,62 @@ export function MediaSettingsPanel({
           </div>
           <p className="self-center text-sm text-ink-muted">{t("settings.previewHint")}</p>
         </div>
+      </section>
+      <section className="flex flex-col gap-4" aria-labelledby="media-quality-title">
+        <div>
+          <h3 id="media-quality-title" className="font-display text-sm font-bold text-ink">
+            {t("settings.qualityTitle")}
+          </h3>
+          <p className="mt-1 text-xs leading-5 text-ink-muted">{t("settings.qualityBody")}</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-x-6">
+          <QualitySelect<"receive">
+            id="quality-receive"
+            label={t("settings.qualityReceive")}
+            icon={<IconEye className="size-4" />}
+            value={quality.receive}
+            options={receiveQualities}
+            optionLabel={(value) => t(`settings.receive.${value}`)}
+            onChange={(value) => onQuality("receive", value)}
+          />
+          <QualitySelect<"voice">
+            id="quality-voice"
+            label={t("settings.qualityVoice")}
+            icon={<IconMicrophone className="size-4" />}
+            value={quality.voice}
+            options={qualityLevels}
+            optionLabel={(value) => t(`settings.voiceLevel.${value}`)}
+            onChange={(value) => onQuality("voice", value)}
+          />
+          <QualitySelect<"camera">
+            id="quality-camera"
+            label={t("settings.qualityCamera")}
+            icon={<IconVideo className="size-4" />}
+            value={quality.camera}
+            options={qualityLevels}
+            optionLabel={(value) => t(`settings.cameraLevel.${value}`)}
+            onChange={(value) => onQuality("camera", value)}
+          />
+          <QualitySelect<"screen">
+            id="quality-screen"
+            label={t("settings.qualityScreen")}
+            icon={<IconDeviceDesktop className="size-4" />}
+            value={quality.screen}
+            options={qualityLevels}
+            optionLabel={(value) => t(`settings.screenLevel.${value}`)}
+            onChange={(value) => onQuality("screen", value)}
+          />
+          <QualitySelect<"screenContent">
+            id="quality-screen-content"
+            label={t("settings.qualityScreenContent")}
+            icon={<IconPhotoVideo className="size-4" />}
+            value={quality.screenContent}
+            options={screenContents}
+            optionLabel={(value) => t(`settings.screenContent.${value}`)}
+            onChange={(value) => onQuality("screenContent", value)}
+          />
+        </div>
+        <p className="text-xs leading-5 text-ink-muted">{t("settings.qualityScreenHint")}</p>
       </section>
     </div>
   );

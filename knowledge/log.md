@@ -2,6 +2,7 @@
 
 ## 2026-11-18
 
+* **Release**: 2.0.1, with better screen sharing and quality settings. Change: [media-quality](/changes/2026-11-18/media-quality/media-quality.md). New rule [media-quality](/rules/media-quality.md).
 * **Release**: 2.0.0, with the room redesign. Change: [room-redesign](/changes/2026-11-18/room-redesign/room-redesign.md).
 * **Update**: Owner, admin, and moderator have their own icon and color in the room, documented in `01 · Fundamentos`. Change: [room-redesign](/changes/2026-11-18/room-redesign/room-redesign.md).
 * **Fix**: People in the room's left rail open a popover instead of a dialog that could not be closed. Change: [room-redesign](/changes/2026-11-18/room-redesign/room-redesign.md).

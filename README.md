@@ -59,7 +59,7 @@ That downloads ready-made images from [Docker Hub](https://hub.docker.com/r/sims
 Just kicking the tires on your own computer? A single command gets the app itself running (though voice/video needs the LiveKit piece too — see the guide):
 
 ```bash
-docker run -p 3001:3001 -p 127.0.0.1:3002:3002 -e SESSION_SECRET=change-me -e ADMIN_BIND=0.0.0.0 simstosh/amphitheatre:2.0.0
+docker run -p 3001:3001 -p 127.0.0.1:3002:3002 -e SESSION_SECRET=change-me -e ADMIN_BIND=0.0.0.0 simstosh/amphitheatre:2.0.1
 ```
 
 ### "I want to change the code / contribute"

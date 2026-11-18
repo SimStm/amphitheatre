@@ -28,7 +28,7 @@ Current pins (Nov 2026):
 | Caddy | `caddy:2.11.9-alpine` |
 | coturn (commented) | `coturn/coturn:4.19.1-alpine` |
 | Traefik | `traefik:v3.7.19` |
-| Amphitheatre (`deploy/`) | `simstosh/amphitheatre:${AMPHITHEATRE_VERSION:-2.0.0}` |
+| Amphitheatre (`deploy/`) | `simstosh/amphitheatre:${AMPHITHEATRE_VERSION:-2.0.1}` |
 
 When bumping OME, `Server.xml` **must** match the image schema (v0.21+ uses `TcpRelayForce` / `TcpIceWorkerCount` / ICE TCP). When bumping down, do not leave new-schema tags on an old image.
 

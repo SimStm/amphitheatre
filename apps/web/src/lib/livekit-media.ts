@@ -12,7 +12,6 @@ export const SCREEN_SHARE_CAPTURE_OPTIONS: ScreenShareCaptureOptions = {
   systemAudio: "include",
   selfBrowserSurface: "include",
   surfaceSwitching: "include",
-  contentHint: "detail",
 };
 
 export function isRemoteAudioTrack(track: { kind: Track.Kind }): boolean {

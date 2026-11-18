@@ -22,6 +22,7 @@ Code and process rules. The agent must apply them; if the user changes a durable
 * [Home and join follow Figma](home-and-join-follow-figma.md) - frames 1.2, 1.4, 1.5, 1.6; one dialog per join failure
 * [Site editorial pages](site-editorial-pages.md) - /what-is and /about share the home shell and cards; What-is names no competing products
 * [Original logo on every screen](original-logo-everywhere.md) - keep the original wordmark and symbol; never redraw them
+* [Media quality](media-quality.md) - good defaults, best available layer for viewers, per-browser quality settings
 * [Room floating interface](room-floating-interface.md) - full-screen stage; floats from 1.3e and 1.3d hide on demand and when idle
 * [Stage selection per viewer](stage-selection-per-viewer.md) - each person picks one stream or a resizing grid
 * [Broadcast opt-in](broadcast-opt-in.md) - stream off by default; secret key

@@ -25,6 +25,7 @@ sources:
 
 # Implemented
 
+- Send and viewing quality follow [media-quality](/rules/media-quality.md).
 - LiveKit room **=** Amphitheatre `roomId`. Identity **=** `userId`.
 - `GET /api/rooms/:id/livekit-token` and token on join (`livekitToken` / `livekitUrl`).
 - Grants: `canPublish` + sources camera, mic, screen. Moderation mute **removes** `MICROPHONE` from `canPublishSources` and calls RoomService `updateParticipant`.[^livekit-api]
